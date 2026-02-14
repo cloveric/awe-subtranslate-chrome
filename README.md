@@ -1,220 +1,332 @@
-<p align="center">
-  <img src="icons/icon128.png" width="80" height="80" alt="Awe SubTranslate" />
-</p>
+<div align="center">
 
-<h1 align="center">Awe SubTranslate</h1>
+<img src="icons/icon128.png" width="100" height="100" alt="Awe SubTranslate" />
 
-<p align="center">
-  <strong>Bilingual Web Translation & Video Subtitle Translation for Chrome</strong>
-</p>
+# Awe SubTranslate
 
-<p align="center">
-  <a href="#features">Features</a> &bull;
-  <a href="#installation">Installation</a> &bull;
-  <a href="#supported-engines">Engines</a> &bull;
-  <a href="#usage">Usage</a> &bull;
-  <a href="#architecture">Architecture</a> &bull;
-  <a href="#contributing">Contributing</a>
-</p>
+### _Bilingual Web Translation & Video Subtitle Translation for Chrome_
 
-<p align="center">
-  <img src="https://img.shields.io/badge/manifest-v3-blue?style=flat-square" alt="Manifest V3" />
-  <img src="https://img.shields.io/badge/engines-7-green?style=flat-square" alt="7 Engines" />
-  <img src="https://img.shields.io/badge/license-MIT-yellow?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/build-zero--config-orange?style=flat-square" alt="Zero Config" />
-</p>
+[![Chrome](https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-0F9D58?style=for-the-badge&logo=google&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
+[![License](https://img.shields.io/badge/License-MIT-F4B400?style=for-the-badge)](LICENSE)
+[![Engines](https://img.shields.io/badge/Engines-7-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
+
+**[Features](#-features)** · **[Installation](#-installation)** · **[Engines](#-supported-engines)** · **[Usage](#-usage)** · **[Architecture](#-architecture)** · **[Contributing](#-contributing)**
+
+[**中文文档**](README.zh-CN.md)
 
 ---
 
-## What is Awe SubTranslate?
+<br/>
 
-Awe SubTranslate is a Chrome extension that brings **real-time bilingual translation** to any web page — showing translations inline alongside the original text. It also provides **live subtitle translation** for YouTube and Netflix videos.
+> _Read any foreign language website with side-by-side bilingual display._
+> _Watch any video with dual-language subtitles._
 
-> Read any foreign language website with side-by-side bilingual display. Watch any video with dual-language subtitles.
+<br/>
 
----
+</div>
 
-## Features
+## 🌟 Features
 
-### Web Page Translation
+<table>
+<tr>
+<td width="50%">
 
-- **Bilingual side-by-side display** — Translations appear right next to the original text, preserving the page layout
-- **Smart DOM parsing** — Intelligently groups text by paragraphs, skips code blocks, inputs, and already-translated content
-- **Batch translation** — Groups text into efficient API batches (max 5000 chars) to minimize requests
-- **9 translation themes** — Underline, dashed, highlight, blur (learning mode), paper, blockquote, italic, bold, weakening
-- **One-click translate** — Floating button or keyboard shortcut (`Alt+A`)
-- **Dynamic content support** — MutationObserver detects and translates dynamically loaded content
+### 🌐 Web Page Translation
 
-### Video Subtitle Translation
+- **Bilingual side-by-side display** — translations appear right next to the original text
+- **Smart DOM parsing** — intelligently groups text by paragraphs, skips code/inputs
+- **Batch translation** — efficient API batching (max 5000 chars per batch)
+- **9 translation themes** — underline, highlight, blur, paper, and more
+- **One-click translate** — floating button or `Alt+A` shortcut
+- **Dynamic content** — auto-detects and translates lazy-loaded content
 
-- **YouTube** — Real-time bilingual subtitle overlay for both manual and auto-generated captions
-- **Netflix** — Bilingual subtitle overlay with position tracking
-- **Smart debouncing** — Handles rollup-style auto-generated captions that build word-by-word
-- **Position tracking** — Translation follows the original subtitle position using `requestAnimationFrame`
-- **Error resilience** — Auto-pauses after repeated failures, shows user-friendly error messages
+</td>
+<td width="50%">
 
-### Multi-Engine Support
+### 🎬 Video Subtitle Translation
 
-Switch between **7 translation engines** on the fly — from free services to AI-powered translation:
+- **YouTube** — real-time bilingual overlay for manual & auto-generated captions
+- **Netflix** — bilingual subtitle overlay with smart positioning
+- **Smart debouncing** — handles rollup-style captions that build word-by-word
+- **Position tracking** — translations follow subtitle position via `requestAnimationFrame`
+- **Error resilience** — auto-pauses after failures with friendly error messages
 
-| Engine | API Key Required | Best For |
-|--------|:---:|---|
-| **Google Translate** | No | General purpose, fast |
-| **Microsoft Translator** | No | General purpose, free |
-| **DeepL** | Yes | European languages, quality |
-| **OpenAI (GPT)** | Yes | Context-aware, nuanced |
-| **Anthropic Claude** | Yes | Long text, accuracy |
-| **Google Gemini** | Yes | Multilingual, latest models |
-| **DeepSeek** | Yes | Chinese-English, cost-effective |
+</td>
+</tr>
+</table>
 
-### Settings & Configuration
+### 🎨 Translation Themes
 
-- Full settings page with per-engine API key management
-- Target language selection (10 languages)
-- Translation theme preview
-- Import/export configuration
-- Right-click context menu integration
+> Choose how your translations look — 9 beautiful themes built in:
 
----
-
-## Installation
-
-### From Source (Developer Mode)
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/cloveric/awe-subtranslate-chrome.git
-   ```
-
-2. Open Chrome and navigate to `chrome://extensions/`
-
-3. Enable **Developer mode** (toggle in the top right)
-
-4. Click **Load unpacked** and select the `awe-subtranslate-chrome` folder
-
-5. The extension icon will appear in your toolbar — you're ready to go!
-
-### Configuration
-
-- **Free engines** (Google, Microsoft) work out of the box
-- **AI engines** require an API key — click the extension icon → Settings → Translation Services
+| Theme | Style | Theme | Style |
+|:---:|:---:|:---:|:---:|
+| `underline` | Blue underline | `dashed` | Dashed border |
+| `highlight` | Yellow highlight | `weakening` | Subtle opacity |
+| `italic` | Italic text | `bold` | Bold text |
+| `mask` | Blur (hover to reveal) | `paper` | Paper card |
+| `blockquote` | Left border accent | | |
 
 ---
 
-## Usage
+## 🚀 Installation
+
+### Step 1 — Clone
+
+```bash
+git clone https://github.com/cloveric/awe-subtranslate-chrome.git
+```
+
+### Step 2 — Load into Chrome
+
+```
+1. Open chrome://extensions/
+2. Enable "Developer mode" (top right toggle)
+3. Click "Load unpacked"
+4. Select the awe-subtranslate-chrome folder
+```
+
+### Step 3 — Start translating!
+
+> **Free engines** (Google, Microsoft) work immediately — no setup needed.
+>
+> **AI engines** need an API key — click extension icon → ⚙ Settings → Translation Services.
+
+---
+
+## 🔮 Supported Engines
+
+<table>
+<tr>
+<th align="center">Engine</th>
+<th align="center">API Key</th>
+<th align="center">Type</th>
+<th>Best For</th>
+</tr>
+
+<tr>
+<td align="center"><strong>Google Translate</strong></td>
+<td align="center">🟢 Free</td>
+<td align="center">Traditional</td>
+<td>General purpose, fast, reliable</td>
+</tr>
+
+<tr>
+<td align="center"><strong>Microsoft Translator</strong></td>
+<td align="center">🟢 Free</td>
+<td align="center">Traditional</td>
+<td>General purpose, good quality</td>
+</tr>
+
+<tr>
+<td align="center"><strong>DeepL</strong></td>
+<td align="center">🔑 Required</td>
+<td align="center">Neural MT</td>
+<td>European languages, natural phrasing</td>
+</tr>
+
+<tr>
+<td align="center"><strong>OpenAI GPT</strong></td>
+<td align="center">🔑 Required</td>
+<td align="center">LLM</td>
+<td>Context-aware, nuanced translation</td>
+</tr>
+
+<tr>
+<td align="center"><strong>Anthropic Claude</strong></td>
+<td align="center">🔑 Required</td>
+<td align="center">LLM</td>
+<td>Long text, high accuracy</td>
+</tr>
+
+<tr>
+<td align="center"><strong>Google Gemini</strong></td>
+<td align="center">🔑 Required</td>
+<td align="center">LLM</td>
+<td>Multilingual, latest generation</td>
+</tr>
+
+<tr>
+<td align="center"><strong>DeepSeek</strong></td>
+<td align="center">🔑 Required</td>
+<td align="center">LLM</td>
+<td>Chinese ↔ English, cost-effective</td>
+</tr>
+
+</table>
+
+---
+
+## 📖 Usage
 
 ### Translate a Web Page
 
-| Method | Action |
-|--------|--------|
-| Floating button | Click the **译** button on any page |
-| Keyboard shortcut | Press `Alt + A` |
-| Right-click menu | Right-click → "Translate This Page" |
-| Popup | Click extension icon → "Translate This Page" |
+| Method | How |
+|:---|:---|
+| 🔘 Floating button | Click the **译** button (bottom-right of any page) |
+| ⌨️ Keyboard shortcut | Press `Alt + A` |
+| 🖱️ Right-click menu | Right-click → "Translate This Page" |
+| 📌 Popup | Click extension icon → "Translate This Page" |
 
 ### Translate Video Subtitles
 
-1. Open a YouTube or Netflix video
-2. Enable subtitles/CC on the video
-3. Translations appear automatically below the original subtitles
+| Step | Action |
+|:---:|:---|
+| **1** | Open a YouTube or Netflix video |
+| **2** | Enable subtitles / CC on the video player |
+| **3** | Translations appear automatically below original subtitles |
 
-### Switch Translation Engine
+### Switch Engine
 
-Click the extension icon → select a different engine from the dropdown. Changes take effect immediately.
+> Click extension icon → select engine from dropdown → changes take effect immediately.
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 awe-subtranslate-chrome/
-├── manifest.json                    # Chrome Extension Manifest V3
-├── _locales/                        # i18n (English + Chinese)
-│   ├── en/messages.json
-│   └── zh_CN/messages.json
-├── icons/                           # Extension icons
-├── src/
-│   ├── background/
-│   │   └── index.js                 # Service Worker: message routing + API dispatch
-│   ├── content/
-│   │   ├── index.js                 # Entry: floating button, toggle, MutationObserver
-│   │   ├── dom-parser.js            # TreeWalker DOM traversal + text extraction
-│   │   ├── translator.js            # Batch coordinator (grouping, caching, retry)
-│   │   ├── injector.js              # Bilingual display injection (<font> tags)
-│   │   └── subtitle/
-│   │       ├── youtube.js           # [MAIN world] XHR/fetch hook for captions
-│   │       ├── netflix.js           # [MAIN world] JSON.parse hook for timedtext
-│   │       └── index.js             # [Isolated] MutationObserver + translation overlay
-│   ├── services/                    # Translation engine adapters
-│   │   ├── base.js                  # Abstract base class
-│   │   ├── google.js                # Google Translate (free API)
-│   │   ├── bing.js                  # Microsoft Translator (free, token-based)
-│   │   ├── deepl.js                 # DeepL API
-│   │   ├── openai.js                # OpenAI Chat Completions
-│   │   ├── claude.js                # Anthropic Messages API
-│   │   ├── gemini.js                # Google Gemini API
-│   │   ├── deepseek.js              # DeepSeek API
-│   │   └── index.js                 # Service registry + factory
-│   ├── popup/                       # Extension popup UI
-│   ├── options/                     # Full settings page
-│   ├── styles/
-│   │   └── inject.css               # 9 translation themes + subtitle styles
-│   └── utils/
-│       ├── storage.js               # chrome.storage.local wrapper
-│       └── messaging.js             # chrome.runtime.sendMessage wrapper
-└── README.md
+│
+├── 📄 manifest.json                     # Chrome Extension Manifest V3
+├── 🌍 _locales/                         # i18n (English + Chinese)
+├── 🎨 icons/                            # Extension icons (16/32/48/128)
+│
+├── 📂 src/
+│   ├── ⚙️ background/
+│   │   └── index.js                     # Service Worker — message routing + API dispatch
+│   │
+│   ├── 📝 content/
+│   │   ├── index.js                     # Entry — floating button, toggle, observer
+│   │   ├── dom-parser.js                # TreeWalker — DOM traversal + text extraction
+│   │   ├── translator.js                # Coordinator — batching, caching, retry
+│   │   ├── injector.js                  # Display — bilingual injection (<font> tags)
+│   │   └── 🎬 subtitle/
+│   │       ├── youtube.js               # [MAIN world] XHR/fetch hook
+│   │       ├── netflix.js               # [MAIN world] JSON.parse hook
+│   │       └── index.js                 # [Isolated] Observer + translation overlay
+│   │
+│   ├── 🔌 services/                     # Translation engine adapters
+│   │   ├── base.js                      # Abstract base class
+│   │   ├── google.js                    # Google Translate
+│   │   ├── bing.js                      # Microsoft Translator
+│   │   ├── deepl.js                     # DeepL
+│   │   ├── openai.js                    # OpenAI GPT
+│   │   ├── claude.js                    # Anthropic Claude
+│   │   ├── gemini.js                    # Google Gemini
+│   │   ├── deepseek.js                  # DeepSeek
+│   │   └── index.js                     # Registry + factory
+│   │
+│   ├── 🪟 popup/                        # Quick-action popup UI
+│   ├── ⚙️ options/                      # Full settings page
+│   ├── 🎨 styles/inject.css             # 9 themes + subtitle styles
+│   └── 🛠️ utils/                        # Storage + messaging wrappers
+│
+├── 📄 README.md
+├── 📄 README.zh-CN.md
+└── 📄 LICENSE
 ```
 
-### Design Decisions
+<details>
+<summary><strong>Data Flow — Web Translation</strong></summary>
+
+```
+User clicks translate
+  → content/index.js dispatches
+    → dom-parser.js collects text blocks (TreeWalker)
+    → translator.js batches & groups (max 5000 chars)
+    → chrome.runtime.sendMessage → background/index.js
+      → services/*.js calls translation API
+    → results returned → injector.js injects bilingual <font> tags
+```
+
+</details>
+
+<details>
+<summary><strong>Data Flow — Subtitle Translation</strong></summary>
+
+```
+youtube.js / netflix.js (MAIN world — hooks XHR/fetch)
+  → window.postMessage to isolated world
+    → subtitle/index.js (MutationObserver watches caption DOM)
+    → chrome.runtime.sendMessage → background → translation API
+    → bilingual subtitle overlay displayed on video
+```
+
+</details>
+
+<details>
+<summary><strong>Design Decisions</strong></summary>
 
 | Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Build tools | None (vanilla JS) | Zero config, instant reload during dev |
-| UI framework | None | Lightweight, minimal footprint |
-| Translation injection | `<font>` + CSS classes | Compatible with all page layouts |
+|:---|:---|:---|
+| Build tools | None (vanilla JS) | Zero config, instant reload |
+| UI framework | None | Lightweight, ~0 overhead |
+| Translation injection | `<font>` + CSS classes | Works with any page layout |
 | Messaging | `chrome.runtime.sendMessage` | Manifest V3 standard |
-| Storage | `chrome.storage.local` | Persistent, sync-friendly |
-| Subtitle tracking | `requestAnimationFrame` | Smooth position following |
+| Storage | `chrome.storage.local` | Persistent, cross-session |
+| Subtitle tracking | `requestAnimationFrame` | Smooth 60fps position sync |
+
+</details>
 
 ---
 
-## Keyboard Shortcuts
+## ⌨️ Shortcuts
 
 | Shortcut | Action |
-|----------|--------|
+|:---:|:---|
 | `Alt + A` | Toggle page translation |
 
-You can customize shortcuts at `chrome://extensions/shortcuts`.
+> Customize at `chrome://extensions/shortcuts`
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Here's how to get started:
+Contributions are welcome! Here's how:
 
-1. Fork this repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Test the extension locally (load unpacked in Chrome)
-5. Commit: `git commit -m "feat: add amazing feature"`
-6. Push: `git push origin feature/amazing-feature`
-7. Open a Pull Request
+```bash
+# 1. Fork & clone
+git clone https://github.com/YOUR_USERNAME/awe-subtranslate-chrome.git
 
-### Development Tips
+# 2. Create feature branch
+git checkout -b feature/amazing-feature
 
-- No build step needed — edit files and reload the extension
-- Background script: `chrome://extensions/` → click the service worker link to debug
-- Content scripts: open DevTools on any page → Console tab
-- Use `[IMT]` prefix in console.log for easy filtering
+# 3. Make changes & test (load unpacked in Chrome)
+
+# 4. Commit & push
+git commit -m "feat: add amazing feature"
+git push origin feature/amazing-feature
+
+# 5. Open a Pull Request
+```
+
+<details>
+<summary><strong>Development Tips</strong></summary>
+
+- **No build step** — edit files, reload extension, done
+- **Background debug** — `chrome://extensions/` → click service worker link
+- **Content debug** — page DevTools → Console → filter by `[IMT]`
+- **Popup debug** — right-click popup → Inspect
+
+</details>
 
 ---
 
-## License
+## 📄 License
 
-[MIT](LICENSE) &copy; 2025 cloveric
+[MIT](LICENSE) © 2025 [cloveric](https://github.com/cloveric)
 
 ---
 
-<p align="center">
-  <sub>If you find this project useful, please consider giving it a star!</sub>
-</p>
+<div align="center">
+
+<br/>
+
+**If you find this useful, a ⭐ would be greatly appreciated!**
+
+<br/>
+
+Made with ❤️ by [cloveric](https://github.com/cloveric)
+
+</div>
