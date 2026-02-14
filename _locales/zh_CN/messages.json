@@ -1,0 +1,20 @@
+{
+  "brandName": { "message": "Awe SubTranslate" },
+  "brandDescription": { "message": "免费的双语对照网页翻译插件，支持 7 大翻译引擎和 YouTube/Netflix 视频字幕翻译" },
+  "toggleTranslate": { "message": "翻译网页/显示原文" },
+  "translatePage": { "message": "翻译此页面" },
+  "showOriginal": { "message": "显示原文" },
+  "translating": { "message": "翻译中..." },
+  "settings": { "message": "设置" },
+  "targetLanguage": { "message": "目标语言" },
+  "translationService": { "message": "翻译服务" },
+  "apiKey": { "message": "API Key" },
+  "save": { "message": "保存" },
+  "saved": { "message": "已保存" },
+  "general": { "message": "通用" },
+  "services": { "message": "翻译服务" },
+  "about": { "message": "关于" },
+  "subtitleTranslation": { "message": "字幕翻译" },
+  "enableSubtitle": { "message": "启用视频字幕翻译" },
+  "translationTheme": { "message": "译文样式" }
+}

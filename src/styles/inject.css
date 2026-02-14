@@ -1,0 +1,225 @@
+/* === Awe SubTranslate - Injected Styles === */
+
+/* 译文容器 */
+font.imt-target {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* 块级元素中的译文换行显示 */
+p font.imt-target,
+h1 font.imt-target,
+h2 font.imt-target,
+h3 font.imt-target,
+h4 font.imt-target,
+h5 font.imt-target,
+h6 font.imt-target,
+li font.imt-target,
+td font.imt-target,
+th font.imt-target,
+div font.imt-target,
+blockquote font.imt-target,
+dd font.imt-target,
+figcaption font.imt-target {
+  display: block;
+}
+
+/* ====== 翻译主题 ====== */
+
+/* 默认：下划线 */
+font.imt-target.imt-theme-underline {
+  color: #666;
+  border-bottom: 1px solid #0ea5e9;
+  padding-bottom: 1px;
+}
+
+/* 虚线 */
+font.imt-target.imt-theme-dashed {
+  color: #666;
+  border-bottom: 1px dashed #999;
+  padding-bottom: 1px;
+}
+
+/* 高亮 */
+font.imt-target.imt-theme-highlight {
+  background-color: #fff9c4;
+  color: #333;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* 弱化 */
+font.imt-target.imt-theme-weakening {
+  opacity: 0.618;
+}
+
+/* 斜体 */
+font.imt-target.imt-theme-italic {
+  font-style: italic;
+  color: #666;
+}
+
+/* 加粗 */
+font.imt-target.imt-theme-bold {
+  font-weight: bold;
+  color: #444;
+}
+
+/* 模糊（学习模式） */
+font.imt-target.imt-theme-mask {
+  filter: blur(5px);
+  transition: filter 0.3s ease;
+}
+font.imt-target.imt-theme-mask:hover {
+  filter: blur(0);
+}
+
+/* 纸张 */
+font.imt-target.imt-theme-paper {
+  background: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: #333;
+}
+
+/* 引用 */
+font.imt-target.imt-theme-blockquote {
+  border-left: 3px solid #0ea5e9;
+  padding-left: 8px;
+  color: #555;
+}
+
+/* ====== 翻译状态 ====== */
+
+/* 翻译中的加载指示 */
+font.imt-target.imt-loading {
+  color: #999;
+  animation: imt-pulse 1.5s infinite;
+}
+
+@keyframes imt-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* 翻译错误 */
+font.imt-target.imt-error {
+  color: #ef4444;
+  text-decoration: underline wavy #ef4444;
+}
+
+/* 分隔符 */
+font.imt-separator {
+  display: inline;
+  margin: 0 4px;
+  color: #ccc;
+  font-size: 0.8em;
+}
+
+/* ====== 仅译文模式 ====== */
+[data-imt-state="translation"] .imt-original {
+  display: none;
+}
+
+/* ====== 视频字幕 ====== */
+.imt-subtitle-container {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  text-align: center;
+  pointer-events: none;
+  max-width: 80%;
+}
+
+.imt-subtitle-original {
+  color: #fff;
+  font-size: 1.1em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8);
+  margin-bottom: 4px;
+}
+
+.imt-subtitle-translated {
+  color: #ffd700;
+  font-size: 0.95em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8);
+}
+
+/* ====== 翻译工具栏浮动按钮 ====== */
+.imt-float-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 80px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.imt-float-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(59,130,246,0.5);
+}
+
+.imt-float-btn.imt-active {
+  background: #ef4444;
+}
+
+/* ====== 翻译服务 Toast 提示 ====== */
+.imt-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2147483647;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  animation: imt-toast-in 0.3s ease;
+  pointer-events: none;
+}
+
+.imt-toast.imt-toast-out {
+  animation: imt-toast-out 0.3s ease forwards;
+}
+
+.imt-toast .imt-toast-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+}
+
+@keyframes imt-toast-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes imt-toast-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-10px); }
+}

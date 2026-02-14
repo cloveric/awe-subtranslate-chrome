@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Awe SubTranslate - 设置</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="options-container">
+    <!-- 侧边导航 -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <img src="../../icons/icon32.png" alt="logo" width="28" height="28" />
+        <h1>Awe SubTranslate</h1>
+      </div>
+      <ul class="nav-list">
+        <li><a href="#general" class="nav-item active" data-tab="general">通用设置</a></li>
+        <li><a href="#services" class="nav-item" data-tab="services">翻译服务</a></li>
+        <li><a href="#subtitle" class="nav-item" data-tab="subtitle">字幕翻译</a></li>
+        <li><a href="#advanced" class="nav-item" data-tab="advanced">高级设置</a></li>
+        <li><a href="#about" class="nav-item" data-tab="about">关于</a></li>
+      </ul>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main-content">
+      <!-- 通用设置 -->
+      <section id="general" class="tab-content active">
+        <h2>通用设置</h2>
+
+        <div class="setting-card">
+          <div class="setting-row">
+            <label>目标语言</label>
+            <select id="opt-target-lang">
+              <option value="zh-CN">简体中文</option>
+              <option value="zh-TW">繁體中文</option>
+              <option value="en">English</option>
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="es">Español</option>
+              <option value="ru">Русский</option>
+              <option value="pt">Português</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <label>默认翻译服务</label>
+            <select id="opt-service">
+              <option value="google">Google 翻译</option>
+              <option value="bing">微软翻译</option>
+              <option value="deepl">DeepL</option>
+              <option value="openai">OpenAI</option>
+              <option value="claude">Claude</option>
+              <option value="gemini">Gemini</option>
+              <option value="deepseek">DeepSeek</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <label>译文样式</label>
+            <select id="opt-theme">
+              <option value="underline">下划线</option>
+              <option value="dashed">虚线</option>
+              <option value="highlight">高亮</option>
+              <option value="weakening">弱化</option>
+              <option value="italic">斜体</option>
+              <option value="bold">加粗</option>
+              <option value="mask">模糊(学习模式)</option>
+              <option value="paper">纸张</option>
+              <option value="blockquote">引用</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <label>译文样式预览</label>
+            <div class="theme-preview">
+              <p>This is an example sentence for translation.</p>
+              <font class="imt-target imt-theme-underline" id="theme-preview-text">这是一个翻译示例句子。</font>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 翻译服务配置 -->
+      <section id="services" class="tab-content">
+        <h2>翻译服务配置</h2>
+
+        <div class="setting-card">
+          <h3>🔓 免费服务（无需配置）</h3>
+          <div class="service-item free">
+            <span class="service-name">Google 翻译</span>
+            <span class="service-badge free">免费</span>
+          </div>
+          <div class="service-item free">
+            <span class="service-name">微软翻译</span>
+            <span class="service-badge free">免费</span>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3>🔑 需要 API Key</h3>
+
+          <div class="service-config">
+            <h4>DeepL</h4>
+            <div class="setting-row">
+              <label>API Key</label>
+              <input type="password" id="cfg-deepl-key" placeholder="输入 DeepL API Key" />
+            </div>
+          </div>
+
+          <div class="service-config">
+            <h4>OpenAI</h4>
+            <div class="setting-row">
+              <label>API Key</label>
+              <input type="password" id="cfg-openai-key" placeholder="输入 OpenAI API Key" />
+            </div>
+            <div class="setting-row">
+              <label>API 地址</label>
+              <input type="text" id="cfg-openai-url" placeholder="https://api.openai.com（可选）" />
+            </div>
+            <div class="setting-row">
+              <label>模型</label>
+              <input type="text" id="cfg-openai-model" placeholder="gpt-4o-mini" />
+            </div>
+          </div>
+
+          <div class="service-config">
+            <h4>Claude</h4>
+            <div class="setting-row">
+              <label>API Key</label>
+              <input type="password" id="cfg-claude-key" placeholder="输入 Claude API Key" />
+            </div>
+            <div class="setting-row">
+              <label>API 地址</label>
+              <input type="text" id="cfg-claude-url" placeholder="https://api.anthropic.com（可选）" />
+            </div>
+            <div class="setting-row">
+              <label>模型</label>
+              <input type="text" id="cfg-claude-model" placeholder="claude-sonnet-4-5-20250929" />
+            </div>
+          </div>
+
+          <div class="service-config">
+            <h4>DeepSeek</h4>
+            <div class="setting-row">
+              <label>API Key</label>
+              <input type="password" id="cfg-deepseek-key" placeholder="输入 DeepSeek API Key" />
+            </div>
+            <div class="setting-row">
+              <label>API 地址</label>
+              <input type="text" id="cfg-deepseek-url" placeholder="https://api.deepseek.com（可选）" />
+            </div>
+            <div class="setting-row">
+              <label>模型</label>
+              <select id="cfg-deepseek-model">
+                <option value="deepseek-chat">deepseek-chat / V3.2（推荐）</option>
+                <option value="deepseek-reasoner">deepseek-reasoner / R1（深度思考）</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="service-config">
+            <h4>Gemini</h4>
+            <div class="setting-row">
+              <label>API Key</label>
+              <input type="password" id="cfg-gemini-key" placeholder="输入 Gemini API Key" />
+            </div>
+            <div class="setting-row">
+              <label>模型</label>
+              <select id="cfg-gemini-model">
+                <option value="gemini-2.5-flash-preview-05-20">gemini-2.5-flash（推荐）</option>
+                <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
+                <option value="gemini-3-pro-preview">gemini-3-pro-preview</option>
+                <option value="gemini-2.5-pro-preview-06-05">gemini-2.5-pro</option>
+                <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-save-services" class="btn-primary">保存配置</button>
+        <span id="save-status" class="save-status"></span>
+      </section>
+
+      <!-- 字幕翻译 -->
+      <section id="subtitle" class="tab-content">
+        <h2>视频字幕翻译</h2>
+
+        <div class="setting-card">
+          <div class="setting-row">
+            <label>
+              <input type="checkbox" id="opt-enable-subtitle" />
+              启用视频字幕翻译
+            </label>
+          </div>
+          <p class="setting-desc">支持 YouTube 和 Netflix 的双语字幕显示。</p>
+          <p class="setting-desc">在播放视频时，原始字幕下方会自动显示翻译后的字幕。</p>
+        </div>
+      </section>
+
+      <!-- 高级设置 -->
+      <section id="advanced" class="tab-content">
+        <h2>高级设置</h2>
+
+        <div class="setting-card">
+          <h3>导入/导出</h3>
+          <div class="setting-row">
+            <button id="btn-export" class="btn-secondary">导出配置</button>
+            <button id="btn-import" class="btn-secondary">导入配置</button>
+            <input type="file" id="file-import" accept=".json" style="display:none" />
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3>重置</h3>
+          <button id="btn-reset" class="btn-danger">恢复默认设置</button>
+        </div>
+      </section>
+
+      <!-- 关于 -->
+      <section id="about" class="tab-content">
+        <h2>关于</h2>
+        <div class="setting-card">
+          <p><strong>Awe SubTranslate</strong></p>
+          <p>版本：v0.1.0</p>
+          <p>免费的双语对照网页翻译插件，支持 7 大翻译引擎和视频字幕翻译。</p>
+          <p><a href="https://github.com/cloveric/awe-subtranslate-chrome" target="_blank">GitHub</a></p>
+          <br />
+          <p>支持的翻译引擎：</p>
+          <ul>
+            <li>Google 翻译（免费）</li>
+            <li>微软翻译（免费）</li>
+            <li>DeepL（需要 API Key）</li>
+            <li>OpenAI / ChatGPT（需要 API Key）</li>
+            <li>Anthropic Claude（需要 API Key）</li>
+            <li>Google Gemini（需要 API Key）</li>
+            <li>DeepSeek（需要 API Key）</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <link rel="stylesheet" href="../styles/inject.css" />
+  <script src="options.js"></script>
+</body>
+</html>

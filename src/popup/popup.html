@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Awe SubTranslate</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="logo">
+        <img src="../../icons/icon32.png" alt="logo" width="24" height="24" />
+        <span class="brand">Awe SubTranslate</span>
+      </div>
+      <button id="btn-settings" class="icon-btn" title="设置">⚙</button>
+    </header>
+
+    <main class="popup-content">
+      <!-- 当前服务指示器 -->
+      <div class="service-indicator">
+        <span class="dot"></span>
+        <span>当前引擎：<strong id="current-service-name">Google 翻译</strong></span>
+      </div>
+
+      <!-- 翻译按钮 -->
+      <button id="btn-translate" class="translate-btn">
+        <span class="btn-icon">译</span>
+        <span class="btn-text">翻译此页面</span>
+      </button>
+
+      <!-- 语言选择 -->
+      <div class="form-row">
+        <label class="form-label">目标语言</label>
+        <select id="sel-target-lang" class="form-select">
+          <option value="zh-CN">简体中文</option>
+          <option value="zh-TW">繁體中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="es">Español</option>
+          <option value="ru">Русский</option>
+          <option value="pt">Português</option>
+        </select>
+      </div>
+
+      <!-- 翻译服务 -->
+      <div class="form-row">
+        <label class="form-label">翻译服务</label>
+        <select id="sel-service" class="form-select">
+          <option value="google">Google 翻译</option>
+          <option value="bing">微软翻译</option>
+          <option value="deepl">DeepL</option>
+          <option value="openai">OpenAI</option>
+          <option value="claude">Claude</option>
+          <option value="gemini">Gemini</option>
+          <option value="deepseek">DeepSeek</option>
+        </select>
+      </div>
+
+      <!-- 译文样式 -->
+      <div class="form-row">
+        <label class="form-label">译文样式</label>
+        <select id="sel-theme" class="form-select">
+          <option value="underline">下划线</option>
+          <option value="dashed">虚线</option>
+          <option value="highlight">高亮</option>
+          <option value="weakening">弱化</option>
+          <option value="italic">斜体</option>
+          <option value="bold">加粗</option>
+          <option value="mask">模糊(学习)</option>
+          <option value="paper">纸张</option>
+          <option value="blockquote">引用</option>
+        </select>
+      </div>
+
+      <!-- 字幕翻译 -->
+      <div class="form-row">
+        <label class="form-label">
+          <input type="checkbox" id="chk-subtitle" />
+          启用视频字幕翻译
+        </label>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <span class="version">v0.1.0</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

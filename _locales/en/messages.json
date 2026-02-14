@@ -1,0 +1,20 @@
+{
+  "brandName": { "message": "Awe SubTranslate" },
+  "brandDescription": { "message": "Free bilingual web translation with 7 engines and YouTube/Netflix subtitle support" },
+  "toggleTranslate": { "message": "Translate Page / Show Original" },
+  "translatePage": { "message": "Translate This Page" },
+  "showOriginal": { "message": "Show Original" },
+  "translating": { "message": "Translating..." },
+  "settings": { "message": "Settings" },
+  "targetLanguage": { "message": "Target Language" },
+  "translationService": { "message": "Translation Service" },
+  "apiKey": { "message": "API Key" },
+  "save": { "message": "Save" },
+  "saved": { "message": "Saved" },
+  "general": { "message": "General" },
+  "services": { "message": "Services" },
+  "about": { "message": "About" },
+  "subtitleTranslation": { "message": "Subtitle Translation" },
+  "enableSubtitle": { "message": "Enable Video Subtitle Translation" },
+  "translationTheme": { "message": "Translation Theme" }
+}
