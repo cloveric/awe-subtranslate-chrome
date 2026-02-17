@@ -36,7 +36,7 @@
 
 - **双语对照显示** — 译文紧贴原文旁边，保持页面原有排版
 - **智能 DOM 解析** — 按段落智能分组文本，自动跳过代码块、输入框
-- **批量翻译** — 高效 API 批量请求（每批最大 5000 字符）
+- **批量翻译** — 高效 API 批量请求（每批最大 4000 字符）
 - **9 种译文主题** — 下划线、高亮、模糊、纸张、引用等样式
 - **一键翻译** — 浮动按钮或快捷键 `Alt+A`
 - **动态内容支持** — 自动检测并翻译懒加载的新内容
@@ -202,8 +202,8 @@ awe-subtranslate-chrome/
 │   │   ├── translator.js                # 翻译协调器 — 批量分组、缓存、重试
 │   │   ├── injector.js                  # 双语注入 — 在原文旁插入 <font> 译文
 │   │   └── 🎬 subtitle/
-│   │       ├── youtube.js               # [MAIN world] 拦截 XHR/fetch 字幕请求
-│   │       ├── netflix.js               # [MAIN world] Hook JSON.parse 获取字幕
+│   │       ├── youtube.js               # [Legacy] MAIN world 字幕 Hook（默认不启用）
+│   │       ├── netflix.js               # [Legacy] MAIN world 字幕 Hook（默认不启用）
 │   │       └── index.js                 # [Isolated] MutationObserver + 译文覆盖层
 │   │
 │   ├── 🔌 services/                     # 翻译引擎适配器
@@ -234,7 +234,7 @@ awe-subtranslate-chrome/
 用户点击翻译
   → content/index.js 调度
     → dom-parser.js 收集文本块（TreeWalker 遍历）
-    → translator.js 批量分组（每批最大 5000 字符）
+    → translator.js 批量分组（每批最大 4000 字符）
     → chrome.runtime.sendMessage → background/index.js
       → services/*.js 调用翻译 API
     → 结果返回 → injector.js 注入双语 <font> 标签
@@ -246,11 +246,9 @@ awe-subtranslate-chrome/
 <summary><strong>数据流 — 字幕翻译</strong></summary>
 
 ```
-youtube.js / netflix.js（MAIN world — Hook XHR/fetch）
-  → window.postMessage 传递到 isolated world
-    → subtitle/index.js（MutationObserver 监听字幕 DOM 变化）
-    → chrome.runtime.sendMessage → background → 翻译 API
-    → 在视频上显示双语字幕覆盖层
+subtitle/index.js（MutationObserver 监听字幕 DOM 变化）
+  → chrome.runtime.sendMessage → background → 翻译 API
+  → 在视频上显示双语字幕覆盖层
 ```
 
 </details>

@@ -19,8 +19,12 @@ window.IMT.Translator = {
    * @param {string} targetLang
    * @param {string} service
    * @param {string} theme
+   * @param {{shouldContinue?: () => boolean}} options
    */
-  async translateBlocks(blocks, targetLang, service, theme) {
+  async translateBlocks(blocks, targetLang, service, theme, options = {}) {
+    const shouldContinue = options.shouldContinue || (() => true);
+    if (!shouldContinue()) return;
+
     // 过滤已翻译和已是目标语言的
     const toTranslate = blocks.filter((block) => {
       if (block.element.hasAttribute('data-imt-translated')) return false;
@@ -32,6 +36,7 @@ window.IMT.Translator = {
 
     // 先显示加载状态
     toTranslate.forEach((block) => {
+      if (!shouldContinue()) return;
       IMT.Injector.showLoading(block.element);
     });
 
@@ -40,9 +45,13 @@ window.IMT.Translator = {
 
     // 并发执行批次（限制并发数）
     for (let i = 0; i < batches.length; i += this.MAX_CONCURRENT) {
+      if (!shouldContinue()) {
+        this._clearLoadingState(toTranslate);
+        return;
+      }
       const chunk = batches.slice(i, i + this.MAX_CONCURRENT);
       await Promise.all(
-        chunk.map((batch) => this._translateBatch(batch, targetLang, service, theme))
+        chunk.map((batch) => this._translateBatch(batch, targetLang, service, theme, shouldContinue))
       );
     }
   },
@@ -75,7 +84,12 @@ window.IMT.Translator = {
   /**
    * 翻译一个批次
    */
-  async _translateBatch(batch, targetLang, service, theme) {
+  async _translateBatch(batch, targetLang, service, theme, shouldContinue = () => true) {
+    if (!shouldContinue()) {
+      this._clearLoadingState(batch);
+      return;
+    }
+
     const texts = batch.map((b) => b.text);
     const cacheKeys = texts.map((t) => `${service}:${targetLang}:${t}`);
 
@@ -116,8 +130,17 @@ window.IMT.Translator = {
       }
     }
 
+    if (!shouldContinue()) {
+      this._clearLoadingState(batch);
+      return;
+    }
+
     // 注入结果
     for (let i = 0; i < batch.length; i++) {
+      if (!shouldContinue()) {
+        this._clearLoadingState(batch.slice(i));
+        return;
+      }
       const block = batch[i];
       if (results[i]) {
         IMT.Injector.replaceLoading(block.element, results[i], theme);
@@ -129,6 +152,18 @@ window.IMT.Translator = {
           loading.classList.add('imt-error');
           loading.textContent = '翻译失败';
         }
+      }
+    }
+  },
+
+  _clearLoadingState(blocks) {
+    for (const block of blocks) {
+      const loading = block.element.querySelector('[data-imt-loading]');
+      if (loading) {
+        loading.remove();
+      }
+      if (block.element.getAttribute('data-imt-translated') === 'loading') {
+        block.element.removeAttribute('data-imt-translated');
       }
     }
   },

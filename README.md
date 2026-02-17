@@ -36,7 +36,7 @@
 
 - **Bilingual side-by-side display** — translations appear right next to the original text
 - **Smart DOM parsing** — intelligently groups text by paragraphs, skips code/inputs
-- **Batch translation** — efficient API batching (max 5000 chars per batch)
+- **Batch translation** — efficient API batching (max 4000 chars per batch)
 - **9 translation themes** — underline, highlight, blur, paper, and more
 - **One-click translate** — floating button or `Alt+A` shortcut
 - **Dynamic content** — auto-detects and translates lazy-loaded content
@@ -202,8 +202,8 @@ awe-subtranslate-chrome/
 │   │   ├── translator.js                # Coordinator — batching, caching, retry
 │   │   ├── injector.js                  # Display — bilingual injection (<font> tags)
 │   │   └── 🎬 subtitle/
-│   │       ├── youtube.js               # [MAIN world] XHR/fetch hook
-│   │       ├── netflix.js               # [MAIN world] JSON.parse hook
+│   │       ├── youtube.js               # [Legacy] MAIN-world subtitle hook (disabled by default)
+│   │       ├── netflix.js               # [Legacy] MAIN-world subtitle hook (disabled by default)
 │   │       └── index.js                 # [Isolated] Observer + translation overlay
 │   │
 │   ├── 🔌 services/                     # Translation engine adapters
@@ -234,7 +234,7 @@ awe-subtranslate-chrome/
 User clicks translate
   → content/index.js dispatches
     → dom-parser.js collects text blocks (TreeWalker)
-    → translator.js batches & groups (max 5000 chars)
+    → translator.js batches & groups (max 4000 chars)
     → chrome.runtime.sendMessage → background/index.js
       → services/*.js calls translation API
     → results returned → injector.js injects bilingual <font> tags
@@ -246,11 +246,9 @@ User clicks translate
 <summary><strong>Data Flow — Subtitle Translation</strong></summary>
 
 ```
-youtube.js / netflix.js (MAIN world — hooks XHR/fetch)
-  → window.postMessage to isolated world
-    → subtitle/index.js (MutationObserver watches caption DOM)
-    → chrome.runtime.sendMessage → background → translation API
-    → bilingual subtitle overlay displayed on video
+ subtitle/index.js (MutationObserver watches caption DOM)
+  → chrome.runtime.sendMessage → background → translation API
+  → bilingual subtitle overlay displayed on video
 ```
 
 </details>

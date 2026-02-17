@@ -38,18 +38,6 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["*://*.youtube.com/*"],
-      "js": ["src/content/subtitle/youtube.js"],
-      "run_at": "document_start",
-      "world": "MAIN"
-    },
-    {
-      "matches": ["*://*.netflix.com/*"],
-      "js": ["src/content/subtitle/netflix.js"],
-      "run_at": "document_start",
-      "world": "MAIN"
-    },
-    {
       "matches": ["*://*.youtube.com/*", "*://*.netflix.com/*"],
       "js": [
         "src/utils/messaging.js",

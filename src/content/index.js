@@ -5,6 +5,7 @@ window.IMT = window.IMT || {};
 
 (function () {
   let isTranslated = false;
+  let activeTranslateSession = 0;
   let settings = {
     targetLanguage: 'zh-CN',
     translationService: 'google',
@@ -16,12 +17,48 @@ window.IMT = window.IMT || {};
     openai: 'OpenAI', claude: 'Claude', gemini: 'Gemini', deepseek: 'DeepSeek',
   };
 
+  function createTranslateGuard(sessionId) {
+    return () => isTranslated && sessionId === activeTranslateSession;
+  }
+
+  async function translateSelection(text) {
+    const selectedText = (text || '').trim();
+    if (!selectedText) {
+      return { error: '未选中文本' };
+    }
+
+    const stored = await IMT.Storage.getAll();
+    Object.assign(settings, stored);
+
+    const serviceName = SERVICE_NAMES[settings.translationService] || settings.translationService;
+    IMT.Injector.showToast(`正在使用 ${serviceName} 翻译选中文本...`, 1500);
+
+    try {
+      const translated = await IMT.Messaging.requestTranslation(
+        [selectedText],
+        'auto',
+        settings.targetLanguage,
+        settings.translationService
+      );
+      const result = translated?.results?.[0];
+      if (!result) {
+        return { error: '翻译失败' };
+      }
+      IMT.Injector.showToast(`译文：${result}`, 5000);
+      return { success: true, result };
+    } catch (err) {
+      console.error('[IMT] Selection translation failed:', err);
+      return { error: err.message || '翻译失败' };
+    }
+  }
+
   /**
    * 翻译当前页面
    */
   async function translatePage() {
     if (isTranslated) {
       // 取消翻译
+      activeTranslateSession += 1;
       IMT.Injector.removeAll();
       isTranslated = false;
       updateFloatButton();
@@ -37,6 +74,7 @@ window.IMT = window.IMT || {};
     if (blocks.length === 0) return;
 
     isTranslated = true;
+    const sessionId = ++activeTranslateSession;
     updateFloatButton();
 
     // Toast 提示正在使用的翻译服务
@@ -44,12 +82,20 @@ window.IMT = window.IMT || {};
     IMT.Injector.showToast(`正在使用 ${serviceName} 翻译...`);
 
     // 执行翻译
-    await IMT.Translator.translateBlocks(
-      blocks,
-      settings.targetLanguage,
-      settings.translationService,
-      settings.translationTheme
-    );
+    try {
+      await IMT.Translator.translateBlocks(
+        blocks,
+        settings.targetLanguage,
+        settings.translationService,
+        settings.translationTheme,
+        { shouldContinue: createTranslateGuard(sessionId) }
+      );
+    } catch (err) {
+      console.error('[IMT] Page translation failed:', err);
+      if (createTranslateGuard(sessionId)()) {
+        IMT.Injector.showToast(`翻译失败：${err.message || '未知错误'}`);
+      }
+    }
   }
 
   /**
@@ -83,11 +129,16 @@ window.IMT = window.IMT || {};
   IMT.Messaging.onMessage((message) => {
     switch (message.action) {
       case 'toggle-translate':
-        translatePage();
+        translatePage().catch((err) => {
+          console.error('[IMT] Toggle translate failed:', err);
+        });
         return { success: true };
 
       case 'get-status':
         return { isTranslated };
+
+      case 'translate-selection':
+        return translateSelection(message.text);
 
       case 'update-settings':
         Object.assign(settings, message.settings);
@@ -141,16 +192,23 @@ window.IMT = window.IMT || {};
 
       if (hasNewContent) {
         // 延迟处理，等 DOM 稳定
+        const sessionId = activeTranslateSession;
         clearTimeout(setupMutationObserver._timer);
         setupMutationObserver._timer = setTimeout(async () => {
+          if (!isTranslated || sessionId !== activeTranslateSession) return;
           const blocks = IMT.DOMParser.collectTranslatableBlocks();
           if (blocks.length > 0) {
-            await IMT.Translator.translateBlocks(
-              blocks,
-              settings.targetLanguage,
-              settings.translationService,
-              settings.translationTheme
-            );
+            try {
+              await IMT.Translator.translateBlocks(
+                blocks,
+                settings.targetLanguage,
+                settings.translationService,
+                settings.translationTheme,
+                { shouldContinue: createTranslateGuard(sessionId) }
+              );
+            } catch (err) {
+              console.error('[IMT] Dynamic content translation failed:', err);
+            }
           }
         }, 500);
       }
