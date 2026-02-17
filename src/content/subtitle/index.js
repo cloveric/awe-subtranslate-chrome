@@ -9,8 +9,9 @@ window.IMT = window.IMT || {};
 (function () {
   'use strict';
 
-  let subtitleEnabled = true;
+  let subtitleEnabled = false;
   let translatedCache = new Map();
+  let subtitleToggleBtn = null;
 
   // 缓存设置
   let cachedService = 'google';
@@ -18,6 +19,39 @@ window.IMT = window.IMT || {};
 
   const isYouTube = location.hostname.includes('youtube.com');
   const isNetflix = location.hostname.includes('netflix.com');
+
+  function updateSubtitleToggleButton() {
+    if (!subtitleToggleBtn) return;
+    subtitleToggleBtn.classList.toggle('imt-active', subtitleEnabled);
+    subtitleToggleBtn.classList.remove('imt-busy');
+    subtitleToggleBtn.textContent = '译';
+    subtitleToggleBtn.title = subtitleEnabled
+      ? '视频字幕翻译已开启，点击关闭'
+      : '视频字幕翻译已关闭，点击开启';
+  }
+
+  function initSubtitleToggleButton() {
+    if (!isYouTube && !isNetflix) return;
+    if (subtitleToggleBtn && subtitleToggleBtn.isConnected) {
+      updateSubtitleToggleButton();
+      return;
+    }
+
+    subtitleToggleBtn = document.querySelector('.imt-float-btn.imt-subtitle-toggle');
+    if (!subtitleToggleBtn) {
+      subtitleToggleBtn = document.createElement('button');
+      subtitleToggleBtn.className = 'imt-float-btn imt-subtitle-toggle';
+      subtitleToggleBtn.type = 'button';
+      subtitleToggleBtn.textContent = '译';
+      document.body.appendChild(subtitleToggleBtn);
+    }
+
+    subtitleToggleBtn.addEventListener('click', function () {
+      chrome.storage.local.set({ enableSubtitle: !subtitleEnabled });
+    });
+
+    updateSubtitleToggleButton();
+  }
 
   function loadSettings() {
     chrome.storage.local.get(['translationService', 'targetLanguage'], function (result) {
@@ -555,6 +589,7 @@ window.IMT = window.IMT || {};
 
   chrome.storage.local.get(['enableSubtitle'], function (result) {
     subtitleEnabled = result.enableSubtitle === true;
+    initSubtitleToggleButton();
     if (!subtitleEnabled) return;
 
     if (isYouTube) {
@@ -568,6 +603,7 @@ window.IMT = window.IMT || {};
   chrome.storage.onChanged.addListener((changes) => {
     if (changes.enableSubtitle) {
       subtitleEnabled = changes.enableSubtitle.newValue === true;
+      updateSubtitleToggleButton();
       if (!subtitleEnabled) {
         if (isYouTube) cleanupYouTube();
         if (isNetflix) cleanupNetflix();

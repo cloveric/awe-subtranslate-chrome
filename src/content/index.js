@@ -267,7 +267,6 @@ window.IMT = window.IMT || {};
 
   // 初始化
   function init() {
-    initFloatButton();
     setupMutationObserver();
   }
 

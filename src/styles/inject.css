@@ -17,25 +17,6 @@ font.imt-target {
   line-height: inherit;
 }
 
-/* 块级元素中的译文换行显示 */
-p font.imt-target,
-h1 font.imt-target,
-h2 font.imt-target,
-h3 font.imt-target,
-h4 font.imt-target,
-h5 font.imt-target,
-h6 font.imt-target,
-li font.imt-target,
-td font.imt-target,
-th font.imt-target,
-div font.imt-target,
-blockquote font.imt-target,
-dd font.imt-target,
-figcaption font.imt-target {
-  display: block;
-  margin-top: 3px;
-}
-
 /* ====== 翻译主题 ====== */
 
 /* 默认：下划线 */

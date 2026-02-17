@@ -145,25 +145,16 @@ window.IMT.Translator = {
       if (results[i]) {
         IMT.Injector.replaceLoading(block.element, results[i], theme);
       } else {
-        // 移除加载状态，显示错误
-        const loading = block.element.querySelector('[data-imt-loading]');
-        if (loading) {
-          loading.classList.remove('imt-loading');
-          loading.classList.add('imt-error');
-          loading.textContent = '翻译失败';
-        }
+        // 失败时恢复原文，避免页面残留“...”或空白
+        IMT.Injector.remove(block.element);
       }
     }
   },
 
   _clearLoadingState(blocks) {
     for (const block of blocks) {
-      const loading = block.element.querySelector('[data-imt-loading]');
-      if (loading) {
-        loading.remove();
-      }
       if (block.element.getAttribute('data-imt-translated') === 'loading') {
-        block.element.removeAttribute('data-imt-translated');
+        IMT.Injector.remove(block.element);
       }
     }
   },
