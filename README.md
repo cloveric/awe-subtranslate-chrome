@@ -279,6 +279,14 @@ User clicks translate
 
 ---
 
+## 📦 Chrome Web Store Release
+
+For API-based upload and publish (v2), see:
+
+- `docs/chrome-web-store-api-v2.zh-CN.md`
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Here's how:

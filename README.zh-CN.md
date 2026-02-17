@@ -279,6 +279,14 @@ subtitle/index.js（MutationObserver 监听字幕 DOM 变化）
 
 ---
 
+## 📦 Chrome Web Store 发布
+
+如果你要走 API v2 自动上传与发布流程，请看：
+
+- `docs/chrome-web-store-api-v2.zh-CN.md`
+
+---
+
 ## 🤝 参与贡献
 
 欢迎贡献代码！以下是参与方式：
