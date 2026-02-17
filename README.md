@@ -47,6 +47,7 @@
 ### 🎬 Real-Time Subtitle Companion
 
 - **YouTube ready** — live bilingual subtitle overlay while watching
+- **Latency-first subtitle path** — track prefetch + early render to reduce perceived delay
 - **Smooth subtitle syncing** — tracks subtitle position in real time
 - **Rollup caption handling** — stable output even for word-by-word subtitle updates
 - **Resilient fallback behavior** — pauses on repeated failures and shows clear feedback
@@ -245,11 +246,20 @@ User clicks translate
 
 ```
  subtitle/index.js (MutationObserver watches caption DOM)
+  → track/live auto mode + cue prefetch + early render
   → chrome.runtime.sendMessage → background → translation API
   → bilingual subtitle overlay displayed on video
 ```
 
 </details>
+
+### Subtitle Latency Fallback Plan (Backup Option)
+
+If additional speed is needed in difficult videos, the next fallback option is:
+
+- **Track batch translation queue** — send multiple adjacent subtitle groups in one request, then map results back by order.
+- **When to activate** — only when cache miss ratio is high or translation RTT becomes unstable.
+- **Safety guardrails** — strict punctuation/length boundaries, bounded batch size, and automatic fallback to single-group translation on mismatch.
 
 <details>
 <summary><strong>Design Decisions</strong></summary>

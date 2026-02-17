@@ -49,7 +49,7 @@ User clicks translate → content/index.js
 
 ```
 subtitle/index.js (isolated world, MutationObserver on caption DOM)
-  → subtitle processing pipeline
+  → track/live auto mode + cue prefetch + early render
   → chrome.runtime.sendMessage → background → Translation API
   → Display bilingual subtitles on video
 ```
@@ -82,5 +82,6 @@ subtitle/index.js (isolated world, MutationObserver on caption DOM)
 ### Key Notes
 - Content scripts cannot use ES modules — use `window.IMT` namespace
 - Subtitle translation runs in isolated world via MutationObserver on YouTube caption DOM
+- Backup latency option (documented): track batch translation queue for adjacent cue groups, enabled only under high-miss/high-RTT conditions
 - Google/Bing are free APIs, no configuration needed
 - AI engines (OpenAI/Claude/Gemini/DeepSeek) require API Key in settings
