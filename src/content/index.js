@@ -5,6 +5,7 @@ window.IMT = window.IMT || {};
 
 (function () {
   let isTranslated = false;
+  let isTranslating = false;
   let activeTranslateSession = 0;
   let settings = {
     targetLanguage: 'zh-CN',
@@ -61,6 +62,7 @@ window.IMT = window.IMT || {};
       activeTranslateSession += 1;
       IMT.Injector.removeAll();
       isTranslated = false;
+      isTranslating = false;
       updateFloatButton();
       return;
     }
@@ -75,6 +77,7 @@ window.IMT = window.IMT || {};
 
     isTranslated = true;
     const sessionId = ++activeTranslateSession;
+    isTranslating = true;
     updateFloatButton();
 
     // Toast 提示正在使用的翻译服务
@@ -95,6 +98,11 @@ window.IMT = window.IMT || {};
       if (createTranslateGuard(sessionId)()) {
         IMT.Injector.showToast(`翻译失败：${err.message || '未知错误'}`);
       }
+    } finally {
+      if (sessionId === activeTranslateSession) {
+        isTranslating = false;
+        updateFloatButton();
+      }
     }
   }
 
@@ -105,7 +113,14 @@ window.IMT = window.IMT || {};
     const btn = document.querySelector('.imt-float-btn');
     if (btn) {
       btn.classList.toggle('imt-active', isTranslated);
-      btn.title = isTranslated ? '显示原文' : '翻译此页面';
+      btn.classList.toggle('imt-busy', isTranslating);
+      if (!isTranslated) {
+        btn.title = '翻译此页面';
+      } else if (isTranslating) {
+        btn.title = '正在翻译...';
+      } else {
+        btn.title = '显示原文';
+      }
     }
   }
 
@@ -198,6 +213,8 @@ window.IMT = window.IMT || {};
           if (!isTranslated || sessionId !== activeTranslateSession) return;
           const blocks = IMT.DOMParser.collectTranslatableBlocks();
           if (blocks.length > 0) {
+            isTranslating = true;
+            updateFloatButton();
             try {
               await IMT.Translator.translateBlocks(
                 blocks,
@@ -208,6 +225,11 @@ window.IMT = window.IMT || {};
               );
             } catch (err) {
               console.error('[IMT] Dynamic content translation failed:', err);
+            } finally {
+              if (isTranslated && sessionId === activeTranslateSession) {
+                isTranslating = false;
+                updateFloatButton();
+              }
             }
           }
         }, 500);

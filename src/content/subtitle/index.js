@@ -33,13 +33,23 @@ window.IMT = window.IMT || {};
 
   let errorCount = 0;
   const MAX_ERRORS = 3;
+  const ERROR_COOLDOWN_MS = 15000;
+  let errorPausedUntil = 0;
   let translateVersion = 0; // 版本计数器，替代单 key 守卫
 
   async function translateText(text) {
     if (!text || !text.trim()) return { text: '', version: -1 };
     const key = text.trim();
     if (translatedCache.has(key)) return { text: translatedCache.get(key), version: -1 };
-    if (errorCount >= MAX_ERRORS) return { text: '', version: -1 };
+
+    if (errorCount >= MAX_ERRORS) {
+      if (Date.now() < errorPausedUntil) {
+        return { text: '', version: -1 };
+      }
+      // 冷却结束后自动恢复
+      errorCount = 0;
+      errorPausedUntil = 0;
+    }
 
     var version = ++translateVersion;
 
@@ -61,7 +71,10 @@ window.IMT = window.IMT || {};
       const msg = e?.message || String(e);
       console.error('[IMT Subtitle] 翻译失败 (' + errorCount + '/' + MAX_ERRORS + '):', msg);
       if (errorCount === 1) showErrorOnVideo('字幕翻译失败: ' + msg.slice(0, 60));
-      if (errorCount >= MAX_ERRORS) showErrorOnVideo('字幕翻译已暂停，请检查翻译服务配置');
+      if (errorCount >= MAX_ERRORS) {
+        errorPausedUntil = Date.now() + ERROR_COOLDOWN_MS;
+        showErrorOnVideo('字幕翻译已暂停，15 秒后自动重试');
+      }
       return { text: '', version: version };
     }
   }
@@ -95,6 +108,16 @@ window.IMT = window.IMT || {};
   let ytCheckInterval = null;
   let ytObservedContainer = null;
   let ytStartCheck = null;
+  let ytMode = 'static'; // static: 完整字幕, live: 实时生成滚动字幕
+  let ytIncrementalHits = 0;
+  let ytPrevCaptionText = '';
+  let ytPrevCaptionAt = 0;
+
+  const YT_DEBOUNCE_MS_STATIC = 160;
+  const YT_DEBOUNCE_MS_LIVE = 320;
+  const YT_LIVE_APPEND_WINDOW_MS = 900;
+  const YT_LIVE_APPEND_MAX_GROWTH = 18;
+  const YT_MODE_SWITCH_THRESHOLD = 3;
 
   function cleanupYouTube() {
     if (ytStartCheck) { clearInterval(ytStartCheck); ytStartCheck = null; }
@@ -106,7 +129,42 @@ window.IMT = window.IMT || {};
     if (ytTranslatedEl) { ytTranslatedEl.remove(); ytTranslatedEl = null; }
     ytObservedContainer = null;
     ytLastText = '';
+    ytMode = 'static';
+    ytIncrementalHits = 0;
+    ytPrevCaptionText = '';
+    ytPrevCaptionAt = 0;
     translateVersion++; // 使进行中的翻译过期
+  }
+
+  function getYouTubeDebounceMs() {
+    return ytMode === 'live' ? YT_DEBOUNCE_MS_LIVE : YT_DEBOUNCE_MS_STATIC;
+  }
+
+  function updateYouTubeCaptionMode(currentText) {
+    const now = Date.now();
+    const prevText = ytPrevCaptionText;
+    const elapsed = now - ytPrevCaptionAt;
+
+    const isIncrementalAppend = !!prevText &&
+      currentText.startsWith(prevText) &&
+      currentText.length > prevText.length &&
+      (currentText.length - prevText.length) <= YT_LIVE_APPEND_MAX_GROWTH &&
+      elapsed <= YT_LIVE_APPEND_WINDOW_MS;
+
+    if (isIncrementalAppend) {
+      ytIncrementalHits = Math.min(ytIncrementalHits + 1, YT_MODE_SWITCH_THRESHOLD + 2);
+    } else if (currentText !== prevText) {
+      ytIncrementalHits = Math.max(ytIncrementalHits - 1, 0);
+    }
+
+    const nextMode = ytIncrementalHits >= YT_MODE_SWITCH_THRESHOLD ? 'live' : 'static';
+    if (nextMode !== ytMode) {
+      ytMode = nextMode;
+      console.log('[IMT] YouTube subtitle mode:', ytMode);
+    }
+
+    ytPrevCaptionText = currentText;
+    ytPrevCaptionAt = now;
   }
 
   function startYouTubeObserver() {
@@ -158,7 +216,7 @@ window.IMT = window.IMT || {};
     // MutationObserver 观察字幕变化
     ytObserver = new MutationObserver(() => {
       clearTimeout(ytDebounceTimer);
-      ytDebounceTimer = setTimeout(processYouTubeCaption, 300);
+      ytDebounceTimer = setTimeout(processYouTubeCaption, getYouTubeDebounceMs());
     });
     ytObserver.observe(container, { childList: true, subtree: true, characterData: true, characterDataOldValue: false });
 
@@ -202,7 +260,19 @@ window.IMT = window.IMT || {};
         if (rect.height > 0) {
           // 译文 top = 原字幕底部 + 4px 间距
           ytTranslatedEl.style.top = (rect.bottom + 4) + 'px';
-          ytTranslatedEl.style.left = (rect.left + rect.width / 2) + 'px';
+
+          // 实时字幕（live）使用偏左布局；已有完整字幕（static）保持居中
+          if (ytMode === 'live') {
+            ytTranslatedEl.style.transform = 'none';
+            ytTranslatedEl.style.textAlign = 'left';
+            ytTranslatedEl.style.left = (rect.left + 10) + 'px';
+            ytTranslatedEl.style.maxWidth = Math.max(260, rect.width - 20) + 'px';
+          } else {
+            ytTranslatedEl.style.transform = 'translateX(-50%)';
+            ytTranslatedEl.style.textAlign = 'center';
+            ytTranslatedEl.style.left = (rect.left + rect.width / 2) + 'px';
+            ytTranslatedEl.style.maxWidth = '80vw';
+          }
         }
       }
 
@@ -230,12 +300,17 @@ window.IMT = window.IMT || {};
         }
       }, 300);
       ytLastText = '';
+      ytMode = 'static';
+      ytIncrementalHits = 0;
+      ytPrevCaptionText = '';
+      ytPrevCaptionAt = 0;
       return;
     }
 
     clearTimeout(ytHideTimer);
 
     if (currentText === ytLastText) return;
+    updateYouTubeCaptionMode(currentText);
     ytLastText = currentText;
 
     // 缓存命中 → 立即显示
@@ -268,6 +343,7 @@ window.IMT = window.IMT || {};
     document.addEventListener('yt-navigate-finish', () => {
       console.log('[IMT] YouTube SPA navigation detected, restarting observer...');
       errorCount = 0;
+      errorPausedUntil = 0;
       startYouTubeObserver();
     });
 
@@ -412,6 +488,7 @@ window.IMT = window.IMT || {};
     if (changes.translationService) {
       cachedService = changes.translationService.newValue || 'google';
       errorCount = 0;
+      errorPausedUntil = 0;
       translatedCache.clear();
     }
     if (changes.targetLanguage) {
@@ -420,6 +497,7 @@ window.IMT = window.IMT || {};
     }
     if (changes.serviceConfigs) {
       errorCount = 0;
+      errorPausedUntil = 0;
       translatedCache.clear();
     }
   });
