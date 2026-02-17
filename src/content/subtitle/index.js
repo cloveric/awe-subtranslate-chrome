@@ -554,7 +554,7 @@ window.IMT = window.IMT || {};
   // ========================
 
   chrome.storage.local.get(['enableSubtitle'], function (result) {
-    subtitleEnabled = result.enableSubtitle !== false;
+    subtitleEnabled = result.enableSubtitle === true;
     if (!subtitleEnabled) return;
 
     if (isYouTube) {
@@ -567,7 +567,7 @@ window.IMT = window.IMT || {};
 
   chrome.storage.onChanged.addListener((changes) => {
     if (changes.enableSubtitle) {
-      subtitleEnabled = changes.enableSubtitle.newValue !== false;
+      subtitleEnabled = changes.enableSubtitle.newValue === true;
       if (!subtitleEnabled) {
         if (isYouTube) cleanupYouTube();
         if (isNetflix) cleanupNetflix();

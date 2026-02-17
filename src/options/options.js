@@ -39,7 +39,7 @@
   document.getElementById('opt-target-lang').value = settings.targetLanguage || 'zh-CN';
   document.getElementById('opt-service').value = settings.translationService || 'google';
   document.getElementById('opt-theme').value = settings.translationTheme || 'underline';
-  document.getElementById('opt-enable-subtitle').checked = settings.enableSubtitle !== false;
+  document.getElementById('opt-enable-subtitle').checked = settings.enableSubtitle === true;
 
   // 服务配置
   document.getElementById('cfg-deepl-key').value = serviceConfigs.deepl?.deeplApiKey || '';

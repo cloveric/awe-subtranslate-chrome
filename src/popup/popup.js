@@ -23,7 +23,7 @@
   selTargetLang.value = settings.targetLanguage || 'zh-CN';
   selService.value = settings.translationService || 'google';
   selTheme.value = settings.translationTheme || 'underline';
-  chkSubtitle.checked = settings.enableSubtitle !== false;
+  chkSubtitle.checked = settings.enableSubtitle === true;
 
   // 检查当前页面翻译状态
   try {
