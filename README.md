@@ -284,6 +284,7 @@ User clicks translate
 For API-based upload and publish (v2), see:
 
 - `docs/chrome-web-store-api-v2.zh-CN.md`
+- `docs/playwright-cws-workflow.zh-CN.md`
 
 ---
 

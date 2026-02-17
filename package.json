@@ -1,0 +1,13 @@
+{
+  "name": "awe-subtranslate-chrome",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "cws:open": "node scripts/cws-playwright.mjs",
+    "cws:account": "node scripts/cws-playwright.mjs --page account"
+  },
+  "devDependencies": {
+    "playwright": "^1.57.0"
+  }
+}
