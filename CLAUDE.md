@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-A Chrome extension that provides bilingual web page translation with side-by-side display, multi-engine support, and video subtitle translation for YouTube and Netflix.
+A Chrome extension that provides bilingual web page translation with text replacement display, multi-engine support, and video subtitle translation for YouTube.
 
 ## Technical Architecture
 
@@ -20,13 +20,12 @@ manifest.json
 ├── src/background/index.js      # Service Worker: message routing + API calls
 ├── src/content/
 │   ├── dom-parser.js            # DOM traversal, collect translatable text blocks
-│   ├── injector.js              # Inject translations into DOM (<font> tags)
+│   ├── injector.js              # Replace text in DOM with translations (<font> tags)
 │   ├── translator.js            # Translation coordinator (batching, caching)
-│   ├── index.js                 # Entry point, floating button, MutationObserver
+│   ├── index.js                 # Entry point, page translation toggle, MutationObserver
 │   └── subtitle/
-│       ├── youtube.js           # [MAIN world] XHR/fetch hook for subtitle interception
-│       ├── netflix.js           # [MAIN world] JSON.parse hook
-│       └── index.js             # [isolated] Receive subtitle data, translate & display
+│       ├── youtube.js           # [Legacy] MAIN world hook (disabled by default)
+│       └── index.js             # [isolated] YouTube subtitle observer + translation display
 ├── src/services/                # Translation engines (ES Module)
 │   ├── base.js → google.js, bing.js, deepl.js, openai.js, claude.js, gemini.js, deepseek.js
 │   └── index.js                 # Service registry + factory
@@ -49,9 +48,8 @@ User clicks translate → content/index.js
 ### Data Flow — Subtitle Translation
 
 ```
-youtube.js / netflix.js (MAIN world, hook XHR/fetch)
-  → window.postMessage
-  → subtitle/index.js (isolated world)
+subtitle/index.js (isolated world, MutationObserver on caption DOM)
+  → subtitle processing pipeline
   → chrome.runtime.sendMessage → background → Translation API
   → Display bilingual subtitles on video
 ```
@@ -83,7 +81,6 @@ youtube.js / netflix.js (MAIN world, hook XHR/fetch)
 
 ### Key Notes
 - Content scripts cannot use ES modules — use `window.IMT` namespace
-- Subtitle scripts use `world: "MAIN"` to hook XHR/fetch
-- Subtitle scripts communicate with content script via `window.postMessage`
+- Subtitle translation runs in isolated world via MutationObserver on YouTube caption DOM
 - Google/Bing are free APIs, no configuration needed
 - AI engines (OpenAI/Claude/Gemini/DeepSeek) require API Key in settings

@@ -1,6 +1,6 @@
 {
   "brandName": { "message": "Awe SubTranslate" },
-  "brandDescription": { "message": "免费的双语对照网页翻译插件，支持 7 大翻译引擎和 YouTube/Netflix 视频字幕翻译" },
+  "brandDescription": { "message": "免费的双语对照网页翻译插件，支持 7 大翻译引擎和 YouTube 视频字幕翻译" },
   "toggleTranslate": { "message": "翻译网页/显示原文" },
   "translatePage": { "message": "翻译此页面" },
   "showOriginal": { "message": "显示原文" },

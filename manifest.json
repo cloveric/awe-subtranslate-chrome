@@ -38,7 +38,7 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["*://*.youtube.com/*", "*://*.netflix.com/*"],
+      "matches": ["*://*.youtube.com/*"],
       "js": [
         "src/utils/messaging.js",
         "src/content/subtitle/index.js"

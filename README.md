@@ -20,7 +20,7 @@
 <br/>
 
 > _Turn foreign websites into readable bilingual pages in one click._
-> _Watch YouTube and Netflix with live subtitle translation on top._
+> _Watch YouTube with live subtitle translation on top._
 
 <br/>
 
@@ -46,7 +46,7 @@
 
 ### 🎬 Real-Time Subtitle Companion
 
-- **YouTube + Netflix ready** — live bilingual subtitle overlay while watching
+- **YouTube ready** — live bilingual subtitle overlay while watching
 - **Smooth subtitle syncing** — tracks subtitle position in real time
 - **Rollup caption handling** — stable output even for word-by-word subtitle updates
 - **Resilient fallback behavior** — pauses on repeated failures and shows clear feedback
@@ -163,7 +163,6 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 
 | Method | How |
 |:---|:---|
-| 🔘 Floating button | Click the **译** button (bottom-right of any page) |
 | ⌨️ Keyboard shortcut | Press `Alt + A` |
 | 🖱️ Right-click menu | Right-click → "Translate This Page" |
 | ✍ Selection translate | Select text → right-click → "Translate selected text" |
@@ -173,7 +172,7 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 
 | Step | Action |
 |:---:|:---|
-| **1** | Open a YouTube or Netflix video |
+| **1** | Open a YouTube video |
 | **2** | Enable subtitles / CC on the video player |
 | **3** | Translations appear automatically below original subtitles |
 
@@ -200,10 +199,9 @@ awe-subtranslate-chrome/
 │   │   ├── index.js                     # Entry — floating button, toggle, observer
 │   │   ├── dom-parser.js                # TreeWalker — DOM traversal + text extraction
 │   │   ├── translator.js                # Coordinator — batching, caching, retry
-│   │   ├── injector.js                  # Display — bilingual injection (<font> tags)
+│   │   ├── injector.js                  # Display — replace original text with translation (<font> tags)
 │   │   └── 🎬 subtitle/
 │   │       ├── youtube.js               # [Legacy] MAIN-world subtitle hook (disabled by default)
-│   │       ├── netflix.js               # [Legacy] MAIN-world subtitle hook (disabled by default)
 │   │       └── index.js                 # [Isolated] Observer + translation overlay
 │   │
 │   ├── 🔌 services/                     # Translation engine adapters

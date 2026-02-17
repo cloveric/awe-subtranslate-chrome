@@ -2,7 +2,6 @@
  * 字幕翻译 Content Script（isolated world）
  *
  * YouTube: MutationObserver 观察字幕 + rAF 持续跟随位置
- * Netflix: 同理
  */
 window.IMT = window.IMT || {};
 
@@ -18,7 +17,6 @@ window.IMT = window.IMT || {};
   let cachedTargetLang = 'zh-CN';
 
   const isYouTube = location.hostname.includes('youtube.com');
-  const isNetflix = location.hostname.includes('netflix.com');
 
   function updateSubtitleToggleButton() {
     if (!subtitleToggleBtn) return;
@@ -31,7 +29,7 @@ window.IMT = window.IMT || {};
   }
 
   function initSubtitleToggleButton() {
-    if (!isYouTube && !isNetflix) return;
+    if (!isYouTube) return;
     if (subtitleToggleBtn && subtitleToggleBtn.isConnected) {
       updateSubtitleToggleButton();
       return;
@@ -484,106 +482,6 @@ window.IMT = window.IMT || {};
   }
 
   // ========================
-  // Netflix
-  // ========================
-
-  let nfTranslatedEl = null;
-  let nfObserver = null;
-  let nfLastText = '';
-  let nfDebounceTimer = null;
-  let nfHideTimer = null;
-  let nfStartCheck = null;
-
-  function cleanupNetflix() {
-    if (nfStartCheck) { clearInterval(nfStartCheck); nfStartCheck = null; }
-    if (nfObserver) { nfObserver.disconnect(); nfObserver = null; }
-    clearTimeout(nfDebounceTimer);
-    clearTimeout(nfHideTimer);
-    if (nfTranslatedEl) { nfTranslatedEl.remove(); nfTranslatedEl = null; }
-    nfLastText = '';
-    translateVersion++; // 使进行中的翻译过期
-  }
-
-  function startNetflixObserver() {
-    cleanupNetflix();
-
-    nfStartCheck = setInterval(() => {
-      const container =
-        document.querySelector('.player-timedtext-text-container') ||
-        document.querySelector('.player-timedtext');
-      if (!container) return;
-      clearInterval(nfStartCheck);
-      nfStartCheck = null;
-      setupNetflixObserver(container);
-    }, 1000);
-  }
-
-  function setupNetflixObserver(container) {
-    nfTranslatedEl = document.createElement('div');
-    nfTranslatedEl.id = 'imt-nf-translated';
-    nfTranslatedEl.style.cssText = `
-      position: fixed;
-      bottom: 60px; left: 50%; transform: translateX(-50%);
-      z-index: 2147483647; text-align: center; pointer-events: none;
-      max-width: 70%; font-size: 2vw; line-height: 1.4;
-      color: #fff; background: rgba(8, 8, 8, 0.75);
-      padding: 6px 16px; border-radius: 4px;
-      font-family: Netflix Sans, Helvetica, Arial, sans-serif;
-      font-weight: 400; white-space: pre-wrap;
-      opacity: 0; transition: opacity 0.15s; display: none;
-    `;
-    document.body.appendChild(nfTranslatedEl);
-
-    nfObserver = new MutationObserver(() => {
-      clearTimeout(nfDebounceTimer);
-      nfDebounceTimer = setTimeout(() => processNetflixCaption(container), 60);
-    });
-    nfObserver.observe(container, { childList: true, subtree: true, characterData: true });
-    console.log('[IMT] Netflix caption observer started');
-  }
-
-  async function processNetflixCaption(container) {
-    if (!subtitleEnabled || !nfTranslatedEl) return;
-
-    var spans = container.querySelectorAll('span');
-    var currentText = Array.from(spans).map(function (s) { return s.textContent; }).join(' ').trim();
-
-    if (!currentText) {
-      clearTimeout(nfHideTimer);
-      nfHideTimer = setTimeout(function () {
-        if (nfTranslatedEl) {
-          nfTranslatedEl.style.opacity = '0';
-          setTimeout(function () { if (nfTranslatedEl) nfTranslatedEl.style.display = 'none'; }, 150);
-        }
-      }, 300);
-      nfLastText = '';
-      return;
-    }
-
-    clearTimeout(nfHideTimer);
-    if (currentText === nfLastText) return;
-    nfLastText = currentText;
-
-    if (translatedCache.has(currentText.trim())) {
-      showNFTranslation(translatedCache.get(currentText.trim()));
-      return;
-    }
-
-    var result = await translateText(currentText);
-    if (nfLastText !== currentText) return;
-    if (result.text) {
-      showNFTranslation(result.text);
-    }
-  }
-
-  function showNFTranslation(text) {
-    if (!nfTranslatedEl || !text) return;
-    nfTranslatedEl.textContent = text;
-    nfTranslatedEl.style.display = 'block';
-    requestAnimationFrame(() => { if (nfTranslatedEl) nfTranslatedEl.style.opacity = '1'; });
-  }
-
-  // ========================
   // 初始化
   // ========================
 
@@ -595,8 +493,6 @@ window.IMT = window.IMT || {};
     if (isYouTube) {
       startYouTubeObserver();
       watchYouTubePlayerChanges();
-    } else if (isNetflix) {
-      startNetflixObserver();
     }
   });
 
@@ -606,12 +502,9 @@ window.IMT = window.IMT || {};
       updateSubtitleToggleButton();
       if (!subtitleEnabled) {
         if (isYouTube) cleanupYouTube();
-        if (isNetflix) cleanupNetflix();
       } else if (isYouTube && !ytObserver && !ytStartCheck) {
         // 重新启用时重启 observer
         startYouTubeObserver();
-      } else if (isNetflix && !nfObserver && !nfStartCheck) {
-        startNetflixObserver();
       }
     }
     if (changes.translationService) {
@@ -633,7 +526,6 @@ window.IMT = window.IMT || {};
 
   window.addEventListener('beforeunload', () => {
     cleanupYouTube();
-    cleanupNetflix();
   });
 
   console.log('[IMT] Subtitle content script loaded');

@@ -20,7 +20,7 @@
 <br/>
 
 > _把任何外语网页变成双语阅读界面。_
-> _在 YouTube / Netflix 上实时叠加字幕翻译。_
+> _在 YouTube 上实时叠加字幕翻译。_
 
 <br/>
 
@@ -46,7 +46,7 @@
 
 ### 🎬 实时字幕翻译伴随
 
-- **YouTube + Netflix 支持** — 播放时实时叠加双语字幕
+- **YouTube 支持** — 播放时实时叠加双语字幕
 - **实时位置同步** — 译文跟随原字幕移动，不遮挡关键画面
 - **逐词字幕友好** — 对 rollup 字幕场景保持稳定输出
 - **容错反馈清晰** — 连续失败会自动暂停并提示你检查配置
@@ -163,7 +163,6 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 
 | 方式 | 操作 |
 |:---|:---|
-| 🔘 浮动按钮 | 点击页面右下角的 **译** 按钮 |
 | ⌨️ 快捷键 | 按 `Alt + A` |
 | 🖱️ 右键菜单 | 右键点击页面 → 「翻译此页面」 |
 | ✍ 选中文本翻译 | 先选中文本 → 右键 → 「翻译选中文本」 |
@@ -173,7 +172,7 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 
 | 步骤 | 操作 |
 |:---:|:---|
-| **1** | 打开 YouTube 或 Netflix 视频 |
+| **1** | 打开 YouTube 视频 |
 | **2** | 在播放器上开启字幕 / CC |
 | **3** | 翻译会自动显示在原始字幕下方 |
 
@@ -200,10 +199,9 @@ awe-subtranslate-chrome/
 │   │   ├── index.js                     # 入口 — 浮动按钮、翻译开关、观察器
 │   │   ├── dom-parser.js                # DOM 遍历 — TreeWalker 提取文本
 │   │   ├── translator.js                # 翻译协调器 — 批量分组、缓存、重试
-│   │   ├── injector.js                  # 双语注入 — 在原文旁插入 <font> 译文
+│   │   ├── injector.js                  # 双语注入 — 用译文替换原文（可还原）
 │   │   └── 🎬 subtitle/
 │   │       ├── youtube.js               # [Legacy] MAIN world 字幕 Hook（默认不启用）
-│   │       ├── netflix.js               # [Legacy] MAIN world 字幕 Hook（默认不启用）
 │   │       └── index.js                 # [Isolated] MutationObserver + 译文覆盖层
 │   │
 │   ├── 🔌 services/                     # 翻译引擎适配器
