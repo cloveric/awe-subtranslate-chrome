@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/badge/License-MIT-F4B400?style=for-the-badge)](LICENSE)
 [![Engines](https://img.shields.io/badge/Engines-7-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
 
-**[Features](#-features)** · **[Installation](#-installation)** · **[Engines](#-supported-engines)** · **[Usage](#-usage)** · **[Architecture](#-architecture)** · **[Contributing](#-contributing)**
+**[Features](#-features)** · **[Installation](#-installation)** · **[Engines](#-supported-engines)** · **[Usage](#-usage)** · **[Architecture](#-architecture)** · **[Privacy](PRIVACY_POLICY.md)** · **[Contributing](#-contributing)**
 
 [**中文文档**](README.zh-CN.md)
 

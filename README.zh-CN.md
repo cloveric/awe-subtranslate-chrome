@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/badge/许可证-MIT-F4B400?style=for-the-badge)](LICENSE)
 [![Engines](https://img.shields.io/badge/翻译引擎-7个-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
 
-**[功能特性](#-功能特性)** · **[安装指南](#-安装指南)** · **[翻译引擎](#-翻译引擎)** · **[使用方法](#-使用方法)** · **[技术架构](#-技术架构)** · **[参与贡献](#-参与贡献)**
+**[功能特性](#-功能特性)** · **[安装指南](#-安装指南)** · **[翻译引擎](#-翻译引擎)** · **[使用方法](#-使用方法)** · **[技术架构](#-技术架构)** · **[隐私政策](PRIVACY_POLICY.zh-CN.md)** · **[参与贡献](#-参与贡献)**
 
 [**English**](README.md)
 
