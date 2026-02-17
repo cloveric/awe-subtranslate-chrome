@@ -82,7 +82,17 @@
       if (player && player.getPlayerResponse) {
         const response = player.getPlayerResponse();
         if (response?.captions?.playerCaptionsTracklistRenderer?.captionTracks) {
-          const tracks = response.captions.playerCaptionsTracklistRenderer.captionTracks;
+          const tracklist = response.captions.playerCaptionsTracklistRenderer;
+          const tracks = tracklist.captionTracks;
+          const translationLanguages = Array.isArray(tracklist.translationLanguages)
+            ? tracklist.translationLanguages.map((lang) => ({
+              languageCode: lang?.languageCode || '',
+              languageName: lang?.languageName?.simpleText ||
+                (Array.isArray(lang?.languageName?.runs) && lang.languageName.runs[0]?.text) ||
+                lang?.languageCode ||
+                '',
+            })).filter((lang) => typeof lang.languageCode === 'string' && lang.languageCode)
+            : [];
           window.postMessage({
             type: 'imt-youtube-caption-tracks',
             tracks: tracks.map((t) => ({
@@ -91,6 +101,7 @@
               baseUrl: t.baseUrl,
               isTranslatable: t.isTranslatable,
             })),
+            translationLanguages,
           }, '*');
         }
       }

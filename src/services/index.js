@@ -22,6 +22,7 @@ const SERVICE_CLASSES = {
 
 /** 服务实例缓存 */
 const instances = {};
+const instanceConfigKeys = {};
 
 /**
  * 获取翻译服务实例
@@ -34,8 +35,11 @@ export function getService(serviceId, config = {}) {
   if (!ServiceClass) {
     throw new Error(`Unknown translation service: ${serviceId}`);
   }
-  // 每次用新 config 创建（API Key 可能变化）
-  instances[serviceId] = new ServiceClass(config);
+  const configKey = JSON.stringify(config || {});
+  if (!instances[serviceId] || instanceConfigKeys[serviceId] !== configKey) {
+    instances[serviceId] = new ServiceClass(config);
+    instanceConfigKeys[serviceId] = configKey;
+  }
   return instances[serviceId];
 }
 

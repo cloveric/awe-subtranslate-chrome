@@ -63,7 +63,10 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["src/styles/inject.css"],
+      "resources": [
+        "src/styles/inject.css",
+        "src/content/subtitle/youtube.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ]
