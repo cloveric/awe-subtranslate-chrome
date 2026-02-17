@@ -4,7 +4,7 @@
 
 # Awe SubTranslate
 
-### _Bilingual Web Translation & Video Subtitle Translation for Chrome_
+### _Read any website and watch subtitles in two languages, instantly._
 
 [![Chrome](https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-0F9D58?style=for-the-badge&logo=google&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
@@ -19,38 +19,37 @@
 
 <br/>
 
-> _Read any foreign language website with side-by-side bilingual display._
-> _Watch any video with dual-language subtitles._
+> _Turn foreign websites into readable bilingual pages in one click._
+> _Watch YouTube and Netflix with live subtitle translation on top._
 
 <br/>
 
 </div>
 
-## 🌟 Features
+## 🌟 Why Awe SubTranslate
 
 <table>
 <tr>
 <td width="50%">
 
-### 🌐 Web Page Translation
+### 🌐 Built for Bilingual Reading
 
-- **Bilingual side-by-side display** — translations appear right next to the original text
-- **Smart DOM parsing** — intelligently groups text by paragraphs, skips code/inputs
-- **Batch translation** — efficient API batching (max 4000 chars per batch)
-- **9 translation themes** — underline, highlight, blur, paper, and more
-- **One-click translate** — floating button or `Alt+A` shortcut
-- **Dynamic content** — auto-detects and translates lazy-loaded content
+- **Side-by-side reading experience** — translated text appears where you read, not in a separate page
+- **Smart page parsing** — groups content by meaningful blocks and skips code/inputs automatically
+- **Fast batch pipeline** — efficient translation batching (up to 4000 chars per request batch)
+- **9 built-in visual themes** — underline, highlight, blur-learning mode, paper style, and more
+- **One-click flow** — floating button, popup action, or `Alt+A` keyboard shortcut
+- **Dynamic page support** — newly loaded content is detected and translated automatically
 
 </td>
 <td width="50%">
 
-### 🎬 Video Subtitle Translation
+### 🎬 Real-Time Subtitle Companion
 
-- **YouTube** — real-time bilingual overlay for manual & auto-generated captions
-- **Netflix** — bilingual subtitle overlay with smart positioning
-- **Smart debouncing** — handles rollup-style captions that build word-by-word
-- **Position tracking** — translations follow subtitle position via `requestAnimationFrame`
-- **Error resilience** — auto-pauses after failures with friendly error messages
+- **YouTube + Netflix ready** — live bilingual subtitle overlay while watching
+- **Smooth subtitle syncing** — tracks subtitle position in real time
+- **Rollup caption handling** — stable output even for word-by-word subtitle updates
+- **Resilient fallback behavior** — pauses on repeated failures and shows clear feedback
 
 </td>
 </tr>
@@ -58,7 +57,7 @@
 
 ### 🎨 Translation Themes
 
-> Choose how your translations look — 9 beautiful themes built in:
+> Pick the style that fits your reading flow — 9 themes included:
 
 | Theme | Style | Theme | Style |
 |:---:|:---:|:---:|:---:|
@@ -70,15 +69,15 @@
 
 ---
 
-## 🚀 Installation
+## 🚀 Get Started in 60 Seconds
 
-### Step 1 — Clone
+### Step 1 — Clone the repository
 
 ```bash
 git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 ```
 
-### Step 2 — Load into Chrome
+### Step 2 — Load it as an unpacked extension
 
 ```
 1. Open chrome://extensions/
@@ -87,15 +86,15 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 4. Select the awe-subtranslate-chrome folder
 ```
 
-### Step 3 — Start translating!
+### Step 3 — Start translating
 
-> **Free engines** (Google, Microsoft) work immediately — no setup needed.
+> **Free engines** (Google, Microsoft) work out of the box.
 >
-> **AI engines** need an API key — click extension icon → ⚙ Settings → Translation Services.
+> **AI engines** need an API key — extension icon → ⚙ Settings → Translation Services.
 
 ---
 
-## 🔮 Supported Engines
+## 🔮 Engine Lineup
 
 <table>
 <tr>
@@ -158,18 +157,19 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 
 ---
 
-## 📖 Usage
+## 📖 Daily Usage
 
-### Translate a Web Page
+### Translate any web page
 
 | Method | How |
 |:---|:---|
 | 🔘 Floating button | Click the **译** button (bottom-right of any page) |
 | ⌨️ Keyboard shortcut | Press `Alt + A` |
 | 🖱️ Right-click menu | Right-click → "Translate This Page" |
+| ✍ Selection translate | Select text → right-click → "Translate selected text" |
 | 📌 Popup | Click extension icon → "Translate This Page" |
 
-### Translate Video Subtitles
+### Translate video subtitles
 
 | Step | Action |
 |:---:|:---|
@@ -177,7 +177,7 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 | **2** | Enable subtitles / CC on the video player |
 | **3** | Translations appear automatically below original subtitles |
 
-### Switch Engine
+### Switch engine anytime
 
 > Click extension icon → select engine from dropdown → changes take effect immediately.
 
