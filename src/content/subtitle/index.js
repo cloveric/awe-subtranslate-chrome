@@ -110,6 +110,7 @@ window.IMT = window.IMT || {};
   let ytStartCheck = null;
   let ytRetryTimer = null;
   let ytTranslateInFlight = false;
+  let ytStaticInFlight = 0;
   let ytPendingText = '';
   let ytLastRequestedText = '';
   let ytLastRequestAt = 0;
@@ -118,10 +119,11 @@ window.IMT = window.IMT || {};
   let ytPrevCaptionText = '';
   let ytPrevCaptionAt = 0;
 
-  const YT_DEBOUNCE_MS_STATIC = 160;
+  const YT_DEBOUNCE_MS_STATIC = 90;
   const YT_DEBOUNCE_MS_LIVE = 320;
-  const YT_MIN_REQUEST_INTERVAL_MS_STATIC = 260;
+  const YT_MIN_REQUEST_INTERVAL_MS_STATIC = 140;
   const YT_MIN_REQUEST_INTERVAL_MS_LIVE = 700;
+  const YT_MAX_IN_FLIGHT_STATIC = 2;
   const YT_REQUEST_RETRY_FALLBACK_MS = 800;
   const YT_LIVE_APPEND_WINDOW_MS = 900;
   const YT_LIVE_APPEND_MAX_GROWTH = 18;
@@ -139,6 +141,7 @@ window.IMT = window.IMT || {};
     ytObservedContainer = null;
     ytLastRenderedText = '';
     ytTranslateInFlight = false;
+    ytStaticInFlight = 0;
     ytPendingText = '';
     ytLastRequestedText = '';
     ytLastRequestAt = 0;
@@ -314,6 +317,7 @@ window.IMT = window.IMT || {};
       }, 300);
       ytLastRenderedText = '';
       ytTranslateInFlight = false;
+      ytStaticInFlight = 0;
       ytPendingText = '';
       ytLastRequestedText = '';
       ytLastRequestAt = 0;
@@ -340,12 +344,17 @@ window.IMT = window.IMT || {};
       return;
     }
 
-    if (ytTranslateInFlight) {
+    const isLiveMode = ytMode === 'live';
+    if (isLiveMode && ytTranslateInFlight) {
+      ytPendingText = currentText;
+      return;
+    }
+    if (!isLiveMode && ytStaticInFlight >= YT_MAX_IN_FLIGHT_STATIC) {
       ytPendingText = currentText;
       return;
     }
 
-    const minInterval = ytMode === 'live'
+    const minInterval = isLiveMode
       ? YT_MIN_REQUEST_INTERVAL_MS_LIVE
       : YT_MIN_REQUEST_INTERVAL_MS_STATIC;
     const sinceLastRequest = Date.now() - ytLastRequestAt;
@@ -353,7 +362,11 @@ window.IMT = window.IMT || {};
     if (currentText === ytLastRenderedText) return;
     if (currentText === ytLastRequestedText && sinceLastRequest < minInterval) return;
 
-    ytTranslateInFlight = true;
+    if (isLiveMode) {
+      ytTranslateInFlight = true;
+    } else {
+      ytStaticInFlight++;
+    }
     ytLastRequestedText = currentText;
     ytLastRequestAt = Date.now();
     if (ytRetryTimer) {
@@ -381,7 +394,11 @@ window.IMT = window.IMT || {};
     } catch (error) {
       console.error('[IMT] YouTube subtitle processing error:', error);
     } finally {
-      ytTranslateInFlight = false;
+      if (isLiveMode) {
+        ytTranslateInFlight = false;
+      } else {
+        ytStaticInFlight = Math.max(0, ytStaticInFlight - 1);
+      }
       if (ytPendingText) {
         const pending = ytPendingText;
         ytPendingText = '';
