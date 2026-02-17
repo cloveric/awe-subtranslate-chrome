@@ -6,6 +6,8 @@ window.IMT = window.IMT || {};
 (function () {
   let isTranslated = false;
   let isTranslating = false;
+  let translateBusyStartedAt = 0;
+  const MIN_BUSY_VISIBLE_MS = 450;
   let activeTranslateSession = 0;
   let settings = {
     targetLanguage: 'zh-CN',
@@ -20,6 +22,17 @@ window.IMT = window.IMT || {};
 
   function createTranslateGuard(sessionId) {
     return () => isTranslated && sessionId === activeTranslateSession;
+  }
+
+  async function clearBusyWithMinimumDelay(sessionId) {
+    const elapsed = Date.now() - translateBusyStartedAt;
+    const remaining = Math.max(0, MIN_BUSY_VISIBLE_MS - elapsed);
+    if (remaining > 0) {
+      await new Promise((resolve) => setTimeout(resolve, remaining));
+    }
+    if (sessionId !== undefined && sessionId !== activeTranslateSession) return;
+    isTranslating = false;
+    updateFloatButton();
   }
 
   async function translateSelection(text) {
@@ -67,17 +80,24 @@ window.IMT = window.IMT || {};
       return;
     }
 
+    // 点击后立即进入工作态，覆盖“DOM 收集阶段无反馈”的空窗
+    isTranslating = true;
+    translateBusyStartedAt = Date.now();
+    updateFloatButton();
+
     // 加载设置
     const stored = await IMT.Storage.getAll();
     Object.assign(settings, stored);
 
     // 收集可翻译文本
     const blocks = IMT.DOMParser.collectTranslatableBlocks();
-    if (blocks.length === 0) return;
+    if (blocks.length === 0) {
+      await clearBusyWithMinimumDelay();
+      return;
+    }
 
     isTranslated = true;
     const sessionId = ++activeTranslateSession;
-    isTranslating = true;
     updateFloatButton();
 
     // Toast 提示正在使用的翻译服务
@@ -100,8 +120,7 @@ window.IMT = window.IMT || {};
       }
     } finally {
       if (sessionId === activeTranslateSession) {
-        isTranslating = false;
-        updateFloatButton();
+        await clearBusyWithMinimumDelay(sessionId);
       }
     }
   }
@@ -112,14 +131,16 @@ window.IMT = window.IMT || {};
   function updateFloatButton() {
     const btn = document.querySelector('.imt-float-btn');
     if (btn) {
+      const showBusy = isTranslated || isTranslating;
       btn.classList.toggle('imt-active', isTranslated);
-      btn.classList.toggle('imt-busy', isTranslating);
+      btn.classList.toggle('imt-busy', showBusy);
+      btn.textContent = showBusy ? '…' : '译';
       if (!isTranslated) {
-        btn.title = '翻译此页面';
+        btn.title = isTranslating ? '正在准备翻译...' : '翻译此页面';
       } else if (isTranslating) {
         btn.title = '正在翻译...';
       } else {
-        btn.title = '显示原文';
+        btn.title = '翻译已开启，点击显示原文';
       }
     }
   }
@@ -214,6 +235,7 @@ window.IMT = window.IMT || {};
           const blocks = IMT.DOMParser.collectTranslatableBlocks();
           if (blocks.length > 0) {
             isTranslating = true;
+            translateBusyStartedAt = Date.now();
             updateFloatButton();
             try {
               await IMT.Translator.translateBlocks(
@@ -227,8 +249,7 @@ window.IMT = window.IMT || {};
               console.error('[IMT] Dynamic content translation failed:', err);
             } finally {
               if (isTranslated && sessionId === activeTranslateSession) {
-                isTranslating = false;
-                updateFloatButton();
+                await clearBusyWithMinimumDelay(sessionId);
               }
             }
           }

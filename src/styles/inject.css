@@ -211,6 +211,11 @@ font.imt-separator {
   box-shadow: 0 14px 24px rgba(217, 119, 6, 0.35) !important;
 }
 
+.imt-float-btn.imt-active.imt-busy {
+  background: linear-gradient(145deg, #f59e0b, #d97706) !important;
+  box-shadow: 0 14px 24px rgba(217, 119, 6, 0.35) !important;
+}
+
 .imt-float-btn.imt-busy::before {
   border-color: rgba(255, 245, 220, 0.55);
   animation: imt-ring-busy 1.2s infinite;

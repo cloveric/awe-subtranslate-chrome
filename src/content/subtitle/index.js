@@ -101,13 +101,18 @@ window.IMT = window.IMT || {};
 
   let ytObserver = null;
   let ytTranslatedEl = null;
-  let ytLastText = '';
+  let ytLastRenderedText = '';
   let ytDebounceTimer = null;
   let ytHideTimer = null;
   let ytPositionRAF = null;
   let ytCheckInterval = null;
   let ytObservedContainer = null;
   let ytStartCheck = null;
+  let ytRetryTimer = null;
+  let ytTranslateInFlight = false;
+  let ytPendingText = '';
+  let ytLastRequestedText = '';
+  let ytLastRequestAt = 0;
   let ytMode = 'static'; // static: 完整字幕, live: 实时生成滚动字幕
   let ytIncrementalHits = 0;
   let ytPrevCaptionText = '';
@@ -115,6 +120,9 @@ window.IMT = window.IMT || {};
 
   const YT_DEBOUNCE_MS_STATIC = 160;
   const YT_DEBOUNCE_MS_LIVE = 320;
+  const YT_MIN_REQUEST_INTERVAL_MS_STATIC = 260;
+  const YT_MIN_REQUEST_INTERVAL_MS_LIVE = 700;
+  const YT_REQUEST_RETRY_FALLBACK_MS = 800;
   const YT_LIVE_APPEND_WINDOW_MS = 900;
   const YT_LIVE_APPEND_MAX_GROWTH = 18;
   const YT_MODE_SWITCH_THRESHOLD = 3;
@@ -124,11 +132,16 @@ window.IMT = window.IMT || {};
     if (ytObserver) { ytObserver.disconnect(); ytObserver = null; }
     if (ytPositionRAF) { cancelAnimationFrame(ytPositionRAF); ytPositionRAF = null; }
     if (ytCheckInterval) { clearInterval(ytCheckInterval); ytCheckInterval = null; }
+    if (ytRetryTimer) { clearTimeout(ytRetryTimer); ytRetryTimer = null; }
     clearTimeout(ytDebounceTimer);
     clearTimeout(ytHideTimer);
     if (ytTranslatedEl) { ytTranslatedEl.remove(); ytTranslatedEl = null; }
     ytObservedContainer = null;
-    ytLastText = '';
+    ytLastRenderedText = '';
+    ytTranslateInFlight = false;
+    ytPendingText = '';
+    ytLastRequestedText = '';
+    ytLastRequestAt = 0;
     ytMode = 'static';
     ytIncrementalHits = 0;
     ytPrevCaptionText = '';
@@ -299,7 +312,15 @@ window.IMT = window.IMT || {};
           }, 150);
         }
       }, 300);
-      ytLastText = '';
+      ytLastRenderedText = '';
+      ytTranslateInFlight = false;
+      ytPendingText = '';
+      ytLastRequestedText = '';
+      ytLastRequestAt = 0;
+      if (ytRetryTimer) {
+        clearTimeout(ytRetryTimer);
+        ytRetryTimer = null;
+      }
       ytMode = 'static';
       ytIncrementalHits = 0;
       ytPrevCaptionText = '';
@@ -309,23 +330,78 @@ window.IMT = window.IMT || {};
 
     clearTimeout(ytHideTimer);
 
-    if (currentText === ytLastText) return;
     updateYouTubeCaptionMode(currentText);
-    ytLastText = currentText;
 
     // 缓存命中 → 立即显示
     var cacheKey = currentText.trim();
     if (translatedCache.has(cacheKey)) {
+      ytLastRenderedText = currentText;
       showYTTranslation(translatedCache.get(cacheKey));
       return;
     }
 
+    if (ytTranslateInFlight) {
+      ytPendingText = currentText;
+      return;
+    }
+
+    const minInterval = ytMode === 'live'
+      ? YT_MIN_REQUEST_INTERVAL_MS_LIVE
+      : YT_MIN_REQUEST_INTERVAL_MS_STATIC;
+    const sinceLastRequest = Date.now() - ytLastRequestAt;
+
+    if (currentText === ytLastRenderedText) return;
+    if (currentText === ytLastRequestedText && sinceLastRequest < minInterval) return;
+
+    ytTranslateInFlight = true;
+    ytLastRequestedText = currentText;
+    ytLastRequestAt = Date.now();
+    if (ytRetryTimer) {
+      clearTimeout(ytRetryTimer);
+      ytRetryTimer = null;
+    }
+
     // 不隐藏旧译文 — 保持显示上一条翻译直到新翻译完成
-    var result = await translateText(currentText);
-    // 检查版本：如果在翻译期间文本已变化，丢弃（但缓存已保存）
-    if (ytLastText !== currentText) return;
-    if (result.text) {
-      showYTTranslation(result.text);
+    let latestText = '';
+    let gotTranslation = false;
+    try {
+      var result = await translateText(currentText);
+      latestText = Array.from(document.querySelectorAll('.ytp-caption-segment'))
+        .map(function (s) { return s.textContent; })
+        .join(' ')
+        .trim();
+
+      const isExactMatch = latestText === currentText;
+      const isLiveAppendMatch = ytMode === 'live' && latestText.startsWith(currentText);
+      if ((isExactMatch || isLiveAppendMatch) && result.text) {
+        gotTranslation = true;
+        ytLastRenderedText = currentText;
+        showYTTranslation(result.text);
+      }
+    } catch (error) {
+      console.error('[IMT] YouTube subtitle processing error:', error);
+    } finally {
+      ytTranslateInFlight = false;
+      if (ytPendingText) {
+        const pending = ytPendingText;
+        ytPendingText = '';
+        if (pending !== ytLastRequestedText) {
+          setTimeout(processYouTubeCaption, 0);
+        }
+      } else if (
+        !gotTranslation &&
+        latestText &&
+        latestText === currentText
+      ) {
+        const cooldownDelay = Math.max(0, errorPausedUntil - Date.now());
+        const retryDelay = cooldownDelay > 0
+          ? cooldownDelay + 80
+          : Math.max(minInterval, YT_REQUEST_RETRY_FALLBACK_MS);
+        ytRetryTimer = setTimeout(function () {
+          ytRetryTimer = null;
+          processYouTubeCaption();
+        }, retryDelay);
+      }
     }
   }
 
