@@ -1,4 +1,11 @@
-/* === Awe SubTranslate - Injected Styles === */
+/* === Awe SubTranslate - Injected Styles (Visual Refresh) === */
+
+:root {
+  --imt-inject-accent: #0f766e;
+  --imt-inject-accent-soft: rgba(15, 118, 110, 0.22);
+  --imt-inject-danger: #dc2626;
+  --imt-inject-muted: #5f6f7d;
+}
 
 /* 译文容器 */
 font.imt-target {
@@ -26,99 +33,103 @@ blockquote font.imt-target,
 dd font.imt-target,
 figcaption font.imt-target {
   display: block;
+  margin-top: 3px;
 }
 
 /* ====== 翻译主题 ====== */
 
 /* 默认：下划线 */
 font.imt-target.imt-theme-underline {
-  color: #666;
-  border-bottom: 1px solid #0ea5e9;
+  color: var(--imt-inject-muted);
+  border-bottom: 2px solid var(--imt-inject-accent);
   padding-bottom: 1px;
 }
 
 /* 虚线 */
 font.imt-target.imt-theme-dashed {
-  color: #666;
-  border-bottom: 1px dashed #999;
+  color: var(--imt-inject-muted);
+  border-bottom: 2px dashed rgba(15, 118, 110, 0.68);
   padding-bottom: 1px;
 }
 
 /* 高亮 */
 font.imt-target.imt-theme-highlight {
-  background-color: #fff9c4;
-  color: #333;
-  padding: 0 2px;
-  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(255, 248, 182, 0) 0%, rgba(255, 248, 182, 0.95) 72%);
+  color: #2f3d4a;
+  padding: 0 3px;
+  border-radius: 3px;
 }
 
 /* 弱化 */
 font.imt-target.imt-theme-weakening {
-  opacity: 0.618;
+  opacity: 0.62;
 }
 
 /* 斜体 */
 font.imt-target.imt-theme-italic {
   font-style: italic;
-  color: #666;
+  color: var(--imt-inject-muted);
 }
 
 /* 加粗 */
 font.imt-target.imt-theme-bold {
-  font-weight: bold;
-  color: #444;
+  font-weight: 700;
+  color: #344454;
 }
 
 /* 模糊（学习模式） */
 font.imt-target.imt-theme-mask {
-  filter: blur(5px);
-  transition: filter 0.3s ease;
+  filter: blur(4.5px);
+  transition: filter 0.24s ease;
 }
+
 font.imt-target.imt-theme-mask:hover {
   filter: blur(0);
 }
 
 /* 纸张 */
 font.imt-target.imt-theme-paper {
-  background: #f8f9fa;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 2px 4px;
-  border-radius: 3px;
-  color: #333;
+  background: linear-gradient(180deg, #fffffe 0%, #f8fafc 100%);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: #2f3f4f;
 }
 
 /* 引用 */
 font.imt-target.imt-theme-blockquote {
-  border-left: 3px solid #0ea5e9;
+  border-left: 3px solid var(--imt-inject-accent);
   padding-left: 8px;
-  color: #555;
+  color: #4f5f6f;
 }
 
 /* ====== 翻译状态 ====== */
 
-/* 翻译中的加载指示 */
 font.imt-target.imt-loading {
-  color: #999;
-  animation: imt-pulse 1.5s infinite;
+  color: #7d8c99;
+  animation: imt-pulse 1.3s infinite;
 }
 
 @keyframes imt-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.38;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
-/* 翻译错误 */
 font.imt-target.imt-error {
-  color: #ef4444;
-  text-decoration: underline wavy #ef4444;
+  color: var(--imt-inject-danger);
+  text-decoration: underline wavy var(--imt-inject-danger);
 }
 
-/* 分隔符 */
 font.imt-separator {
   display: inline;
-  margin: 0 4px;
-  color: #ccc;
-  font-size: 0.8em;
+  margin: 0 5px;
+  color: #b4bfca;
+  font-size: 0.82em;
 }
 
 /* ====== 仅译文模式 ====== */
@@ -141,85 +152,145 @@ font.imt-separator {
 .imt-subtitle-original {
   color: #fff;
   font-size: 1.1em;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), -1px -1px 2px rgba(0, 0, 0, 0.8);
   margin-bottom: 4px;
 }
 
 .imt-subtitle-translated {
-  color: #ffd700;
+  color: #ffe08a;
   font-size: 0.95em;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.85), -1px -1px 2px rgba(0, 0, 0, 0.85);
 }
 
 /* ====== 翻译工具栏浮动按钮 ====== */
 .imt-float-btn {
-  position: fixed;
-  right: 24px;
-  bottom: 80px;
-  width: 56px;
-  height: 56px;
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 80px !important;
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(145deg, #14b8a6, #0f766e) !important;
+  color: #f4fffd !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  cursor: pointer !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 14px 24px rgba(15, 118, 110, 0.35) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+  overflow: hidden !important;
+}
+
+.imt-float-btn::before {
+  content: "";
+  position: absolute;
+  width: 120%;
+  height: 120%;
   border-radius: 50%;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  cursor: pointer;
-  z-index: 999999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(59,130,246,0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
-  font-size: 26px;
-  line-height: 1;
+  border: 2px solid rgba(255, 255, 255, 0.26);
+  transform: scale(0.75);
+  animation: imt-ring 2.2s infinite;
 }
 
 .imt-float-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(59,130,246,0.5);
+  transform: scale(1.08) !important;
+  box-shadow: 0 18px 30px rgba(15, 118, 110, 0.4) !important;
 }
 
 .imt-float-btn.imt-active {
-  background: #ef4444;
+  background: linear-gradient(145deg, #ef4444, #b91c1c) !important;
+  box-shadow: 0 14px 24px rgba(185, 28, 28, 0.34) !important;
+}
+
+@keyframes imt-ring {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.75);
+  }
+  70% {
+    opacity: 0.08;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
 }
 
 /* ====== 翻译服务 Toast 提示 ====== */
 .imt-toast {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 18px;
+  right: 18px;
   z-index: 2147483647;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 14px 24px;
-  border-radius: 8px;
-  font-size: 17px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: rgba(17, 24, 39, 0.82);
+  color: #f4f7fb;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: "Trebuchet MS", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  animation: imt-toast-in 0.3s ease;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  animation: imt-toast-in 0.25s ease;
   pointer-events: none;
+  max-width: min(420px, 84vw);
 }
 
 .imt-toast.imt-toast-out {
-  animation: imt-toast-out 0.3s ease forwards;
+  animation: imt-toast-out 0.25s ease forwards;
 }
 
 .imt-toast .imt-toast-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #2dd4bf;
   flex-shrink: 0;
 }
 
 @keyframes imt-toast-in {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes imt-toast-out {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-10px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 768px) {
+  .imt-float-btn {
+    right: 16px !important;
+    bottom: 68px !important;
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 22px !important;
+  }
+
+  .imt-toast {
+    top: 12px;
+    right: 12px;
+    font-size: 13px;
+    padding: 10px 12px;
+  }
 }
