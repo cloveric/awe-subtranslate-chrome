@@ -26,8 +26,9 @@
       <!-- 翻译按钮 -->
       <button id="btn-translate" class="translate-btn">
         <span class="btn-icon">译</span>
-        <span class="btn-text">翻译此页面</span>
+        <span class="btn-text">翻译此页面正文</span>
       </button>
+      <p class="form-hint">仅翻译当前网页正文，不影响视频字幕翻译。</p>
 
       <!-- 语言选择 -->
       <div class="form-row">
@@ -62,7 +63,7 @@
 
       <!-- 译文样式 -->
       <div class="form-row">
-        <label class="form-label">译文样式</label>
+        <label class="form-label">页面译文样式</label>
         <select id="sel-theme" class="form-select">
           <option value="underline">下划线</option>
           <option value="dashed">虚线</option>
@@ -74,13 +75,14 @@
           <option value="paper">纸张</option>
           <option value="blockquote">引用</option>
         </select>
+        <p class="form-hint">仅作用于“翻译此页面正文”，不影响字幕翻译显示。</p>
       </div>
 
       <!-- 字幕翻译 -->
       <div class="form-row">
         <label class="form-label">
           <input type="checkbox" id="chk-subtitle" />
-          启用视频字幕翻译
+          启用视频字幕翻译（YouTube / Netflix）
         </label>
       </div>
     </main>

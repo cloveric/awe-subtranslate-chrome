@@ -165,10 +165,12 @@ window.IMT = window.IMT || {};
   IMT.Messaging.onMessage((message) => {
     switch (message.action) {
       case 'toggle-translate':
-        translatePage().catch((err) => {
-          console.error('[IMT] Toggle translate failed:', err);
+        return translatePage()
+          .then(() => ({ success: true, isTranslated }))
+          .catch((err) => {
+            console.error('[IMT] Toggle translate failed:', err);
+            return { success: false, error: err.message || '翻译失败', isTranslated };
         });
-        return { success: true };
 
       case 'get-status':
         return { isTranslated };

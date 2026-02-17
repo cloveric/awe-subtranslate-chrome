@@ -191,6 +191,13 @@ body {
   margin-bottom: 7px;
 }
 
+.form-hint {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #617385;
+}
+
 .form-select {
   width: 100%;
   min-height: 42px;

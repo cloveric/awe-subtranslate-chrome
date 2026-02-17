@@ -63,6 +63,10 @@ window.IMT.DOMParser = {
           const text = this._getBlockText(child);
           if (this._isTranslatable(text)) {
             blocks.push({ element: child, text });
+          } else {
+            // 某些站点（如 Google News）大量使用嵌套块级结构，
+            // 父块提取不到文本时继续向下递归，避免整段内容被漏掉。
+            this._walkElement(child, blocks);
           }
         } else {
           // 其他元素：递归处理

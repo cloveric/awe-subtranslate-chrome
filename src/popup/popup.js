@@ -15,6 +15,12 @@
     openai: 'OpenAI', claude: 'Claude', gemini: 'Gemini', deepseek: 'DeepSeek',
   };
 
+  function updateTranslateButtonState(translated) {
+    const isTranslated = translated === true;
+    btnTranslate.classList.toggle('active', isTranslated);
+    btnTranslate.querySelector('.btn-text').textContent = isTranslated ? '显示原文' : '翻译此页面正文';
+  }
+
   // 加载设置
   const settings = await chrome.storage.local.get([
     'targetLanguage', 'translationService', 'translationTheme', 'enableSubtitle'
@@ -30,10 +36,7 @@
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab) {
       const response = await chrome.tabs.sendMessage(tab.id, { action: 'get-status' });
-      if (response && response.isTranslated) {
-        btnTranslate.classList.add('active');
-        btnTranslate.querySelector('.btn-text').textContent = '显示原文';
-      }
+      updateTranslateButtonState(response?.isTranslated === true);
     }
   } catch (e) {
     // Content script 可能未加载
@@ -45,9 +48,13 @@
     if (!tab) return;
 
     try {
-      await chrome.tabs.sendMessage(tab.id, { action: 'toggle-translate' });
-      const isActive = btnTranslate.classList.toggle('active');
-      btnTranslate.querySelector('.btn-text').textContent = isActive ? '显示原文' : '翻译此页面';
+      const response = await chrome.tabs.sendMessage(tab.id, { action: 'toggle-translate' });
+      if (typeof response?.isTranslated === 'boolean') {
+        updateTranslateButtonState(response.isTranslated);
+      } else {
+        const status = await chrome.tabs.sendMessage(tab.id, { action: 'get-status' });
+        updateTranslateButtonState(status?.isTranslated === true);
+      }
     } catch (e) {
       // 如果 content script 未加载，先注入
       console.error('Failed to send message:', e);
