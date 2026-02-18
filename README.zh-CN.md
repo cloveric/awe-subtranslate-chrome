@@ -13,7 +13,7 @@
 
 **[功能特性](#-功能特性)** · **[安装指南](#-安装指南)** · **[翻译引擎](#-翻译引擎)** · **[使用方法](#-使用方法)** · **[技术架构](#-技术架构)** · **[隐私政策](PRIVACY_POLICY.zh-CN.md)** · **[参与贡献](#-参与贡献)**
 
-[**English**](README.md)
+[**English**](README.en.md)
 
 ---
 
@@ -224,8 +224,9 @@ awe-subtranslate-chrome/
 │   ├── 🎨 styles/inject.css             # 9 种主题 + 字幕样式
 │   └── 🛠️ utils/                        # Storage + Messaging 封装
 │
-├── 📄 README.md                         # English documentation
-├── 📄 README.zh-CN.md                   # 中文文档
+├── 📄 README.md                         # 中文主文档（GitHub 默认展示）
+├── 📄 README.en.md                      # English documentation
+├── 📄 README.zh-CN.md                   # 中文镜像（兼容旧链接）
 └── 📄 LICENSE                           # MIT 许可证
 ```
 
@@ -349,3 +350,4 @@ git push origin feature/amazing-feature
 由 [cloveric](https://github.com/cloveric) 用 ❤️ 打造
 
 </div>
+

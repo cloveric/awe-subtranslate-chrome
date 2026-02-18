@@ -4,335 +4,336 @@
 
 # Awe SubTranslate
 
-### _Read any website and watch subtitles in two languages, instantly._
+### _一键看懂外语网页，实时双语观看视频字幕。_
 
-[![Chrome](https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
+[![Chrome](https://img.shields.io/badge/Chrome-扩展程序-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-0F9D58?style=for-the-badge&logo=google&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
-[![License](https://img.shields.io/badge/License-MIT-F4B400?style=for-the-badge)](LICENSE)
-[![Engines](https://img.shields.io/badge/Engines-7-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
+[![License](https://img.shields.io/badge/许可证-MIT-F4B400?style=for-the-badge)](LICENSE)
+[![Engines](https://img.shields.io/badge/翻译引擎-7个-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
 
-**[Features](#-features)** · **[Installation](#-installation)** · **[Engines](#-supported-engines)** · **[Usage](#-usage)** · **[Architecture](#-architecture)** · **[Privacy](PRIVACY_POLICY.md)** · **[Contributing](#-contributing)**
+**[功能特性](#-功能特性)** · **[安装指南](#-安装指南)** · **[翻译引擎](#-翻译引擎)** · **[使用方法](#-使用方法)** · **[技术架构](#-技术架构)** · **[隐私政策](PRIVACY_POLICY.zh-CN.md)** · **[参与贡献](#-参与贡献)**
 
-[**中文文档**](README.zh-CN.md)
+[**English**](README.en.md)
 
 ---
 
 <br/>
 
-> _Turn foreign websites into readable translated pages in one click._
-> _Watch YouTube with low-latency bilingual subtitles on top._
+> _把任何外语网页一键变成可读译文页面。_
+> _在 YouTube 上低延迟叠加中英双语字幕。_
 
 <br/>
 
 </div>
 
-## 🌟 Why Awe SubTranslate
+## 🌟 为什么选 Awe SubTranslate
 
 <table>
 <tr>
 <td width="50%">
 
-### 🌐 Built for Bilingual Reading
+### 🌐 为双语阅读而设计
 
-- **Side-by-side reading experience** — translated text appears where you read, not in a separate page
-- **Smart page parsing** — groups content by meaningful blocks and skips code/inputs automatically
-- **Fast batch pipeline** — efficient translation batching (up to 4000 chars per request batch)
-- **9 built-in visual themes** — underline, highlight, blur-learning mode, paper style, and more
-- **One-click flow** — floating button, popup action, or `Alt+A` keyboard shortcut
-- **Dynamic page support** — newly loaded content is detected and translated automatically
+- **原位双语阅读** — 译文直接出现在阅读位置，不打断浏览节奏
+- **智能页面解析** — 按语义块提取文本，自动跳过代码和输入区
+- **高效批量翻译** — 请求按批处理（每批最多 4000 字符）
+- **9 种内置译文风格** — 下划线、高亮、学习模糊、纸张风格等
+- **一键触发** — 浮动按钮、弹窗入口、`Alt+A` 快捷键都可用
+- **动态内容跟进** — 页面懒加载内容会被自动识别并翻译
 
 </td>
 <td width="50%">
 
-### 🎬 Real-Time Subtitle Companion
+### 🎬 实时字幕翻译伴随
 
-- **YouTube ready** — click player-side `译` button to start subtitle translation
-- **Auto CC assist** — subtitle translation can auto-enable YouTube CC when needed
-- **Latency-first subtitle path** — native translated track first, then cached engine fallback
-- **Overlap-cue alignment** — picks latest active cue to reduce half-beat lag in rollup streams
-- **Smooth subtitle syncing** — tracks subtitle position in real time
-- **Resilient fallback behavior** — pauses on repeated failures and shows clear feedback
+- **YouTube 支持** — 点击播放器内 `译` 按钮即可开启字幕翻译
+- **CC 自动协助** — 需要时可自动开启 YouTube 原生字幕
+- **低延迟优先链路** — 优先使用 YouTube 原生翻译轨，缺失时回退到缓存翻译引擎
+- **重叠 cue 对齐** — 在 rollup 场景优先选择最新活跃 cue，减少慢半拍
+- **实时位置同步** — 译文跟随原字幕移动，不遮挡关键画面
+- **容错反馈清晰** — 连续失败会自动暂停并提示你检查配置
 
 </td>
 </tr>
 </table>
 
-### 🎨 Translation Themes
+### 🎨 译文主题
 
-> Pick the style that fits your reading flow — 9 themes included:
+> 9 种译文样式可随时切换，找到最适合你的阅读方式：
 
-| Theme | Style | Theme | Style |
+| 主题 | 效果 | 主题 | 效果 |
 |:---:|:---:|:---:|:---:|
-| `underline` | Blue underline | `dashed` | Dashed border |
-| `highlight` | Yellow highlight | `weakening` | Subtle opacity |
-| `italic` | Italic text | `bold` | Bold text |
-| `mask` | Blur (hover to reveal) | `paper` | Paper card |
-| `blockquote` | Left border accent | | |
+| `下划线` | 蓝色下划线标注 | `虚线` | 虚线边框 |
+| `高亮` | 黄色荧光笔 | `弱化` | 柔和透明度 |
+| `斜体` | 斜体文字 | `加粗` | 加粗文字 |
+| `模糊` | 模糊遮罩（悬停显示） | `纸张` | 卡片效果 |
+| `引用` | 左侧蓝色边框 | | |
 
 ---
 
-## 🚀 Get Started in 60 Seconds
+## 🚀 60 秒快速上手
 
-### Step 1 — Clone the repository
+### 第一步 — 克隆仓库
 
 ```bash
 git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 ```
 
-### Step 2 — Load it as an unpacked extension
+### 第二步 — 作为“已解压扩展程序”加载
 
 ```
-1. Open chrome://extensions/
-2. Enable "Developer mode" (top right toggle)
-3. Click "Load unpacked"
-4. Select the awe-subtranslate-chrome folder
+1. 打开 chrome://extensions/
+2. 开启右上角「开发者模式」
+3. 点击「加载已解压的扩展程序」
+4. 选择 awe-subtranslate-chrome 文件夹
 ```
 
-### Step 3 — Start translating
+### 第三步 — 开始使用
 
-> **Free engines** (Google, Microsoft) work out of the box.
+> **免费引擎**（Google、微软）开箱即用。
 >
-> **AI engines** need an API key — extension icon → ⚙ Settings → Translation Services.
+> **AI 引擎**需要 API Key：点击扩展图标 → ⚙ 设置 → 翻译服务。
 
 ---
 
-## 🔮 Engine Lineup
+## 🔮 引擎矩阵
 
 <table>
 <tr>
-<th align="center">Engine</th>
+<th align="center">引擎</th>
 <th align="center">API Key</th>
-<th align="center">Type</th>
-<th>Best For</th>
+<th align="center">类型</th>
+<th>特点</th>
 </tr>
 
 <tr>
-<td align="center"><strong>Google Translate</strong></td>
-<td align="center">🟢 Free</td>
-<td align="center">Traditional</td>
-<td>General purpose, fast, reliable</td>
+<td align="center"><strong>Google 翻译</strong></td>
+<td align="center">🟢 免费</td>
+<td align="center">传统翻译</td>
+<td>通用、速度快、稳定可靠</td>
 </tr>
 
 <tr>
-<td align="center"><strong>Microsoft Translator</strong></td>
-<td align="center">🟢 Free</td>
-<td align="center">Traditional</td>
-<td>General purpose, good quality</td>
+<td align="center"><strong>微软翻译</strong></td>
+<td align="center">🟢 免费</td>
+<td align="center">传统翻译</td>
+<td>通用、质量好、免费无限制</td>
 </tr>
 
 <tr>
 <td align="center"><strong>DeepL</strong></td>
-<td align="center">🔑 Required</td>
-<td align="center">Neural MT</td>
-<td>European languages, natural phrasing</td>
+<td align="center">🔑 需要</td>
+<td align="center">神经网络</td>
+<td>欧洲语言强、表达自然流畅</td>
 </tr>
 
 <tr>
 <td align="center"><strong>OpenAI GPT</strong></td>
-<td align="center">🔑 Required</td>
-<td align="center">LLM</td>
-<td>Context-aware, nuanced translation</td>
+<td align="center">🔑 需要</td>
+<td align="center">大模型</td>
+<td>上下文感知、翻译细腻</td>
 </tr>
 
 <tr>
 <td align="center"><strong>Anthropic Claude</strong></td>
-<td align="center">🔑 Required</td>
-<td align="center">LLM</td>
-<td>Long text, high accuracy</td>
+<td align="center">🔑 需要</td>
+<td align="center">大模型</td>
+<td>长文本、高准确性</td>
 </tr>
 
 <tr>
 <td align="center"><strong>Google Gemini</strong></td>
-<td align="center">🔑 Required</td>
-<td align="center">LLM</td>
-<td>Multilingual, latest generation</td>
+<td align="center">🔑 需要</td>
+<td align="center">大模型</td>
+<td>多语言、最新模型</td>
 </tr>
 
 <tr>
 <td align="center"><strong>DeepSeek</strong></td>
-<td align="center">🔑 Required</td>
-<td align="center">LLM</td>
-<td>Chinese ↔ English, cost-effective</td>
+<td align="center">🔑 需要</td>
+<td align="center">大模型</td>
+<td>中英翻译佳、性价比高</td>
 </tr>
 
 </table>
 
 ---
 
-## 📖 Daily Usage
+## 📖 日常使用
 
-### Translate any web page
+### 网页翻译
 
-| Method | How |
+| 方式 | 操作 |
 |:---|:---|
-| ⌨️ Keyboard shortcut | Press `Alt + A` |
-| 🖱️ Right-click menu | Right-click → "Translate This Page" |
-| ✍ Selection translate | Select text → right-click → "Translate selected text" |
-| 📌 Popup | Click extension icon → "Translate This Page" |
+| ⌨️ 快捷键 | 按 `Alt + A` |
+| 🖱️ 右键菜单 | 右键点击页面 → 「翻译此页面」 |
+| ✍ 选中文本翻译 | 先选中文本 → 右键 → 「翻译选中文本」 |
+| 📌 弹出窗口 | 点击扩展图标 → 「翻译此页面」 |
 
-> Page translation only affects page body text, and does not toggle video subtitle translation.
+> 页面翻译仅作用于网页正文，不会联动开启视频字幕翻译。
 
-### Translate video subtitles
+### 视频字幕翻译
 
-| Step | Action |
+| 步骤 | 操作 |
 |:---:|:---|
-| **1** | Open a YouTube video |
-| **2** | Click the player-side `译` button (next to CC) |
-| **3** | Extension renders bilingual subtitle overlay and keeps it synced with player subtitles |
+| **1** | 打开 YouTube 视频 |
+| **2** | 点击播放器内 `译` 按钮（在 CC 按钮旁） |
+| **3** | 扩展在视频上叠加中英双语字幕，并持续跟随播放器字幕同步 |
 
-### Switch engine anytime
+### 随时切换翻译引擎
 
-> Click extension icon → select engine from dropdown → changes take effect immediately.
+> 点击扩展图标 → 在下拉菜单中选择引擎 → 立即生效，无需刷新。
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ 技术架构
 
 ```
 awe-subtranslate-chrome/
 │
-├── 📄 manifest.json                     # Chrome Extension Manifest V3
-├── 🌍 _locales/                         # i18n (English + Chinese)
-├── 🎨 icons/                            # Extension icons (16/32/48/128)
+├── 📄 manifest.json                     # Chrome Extension Manifest V3 配置
+├── 🌍 _locales/                         # 国际化（中英双语）
+├── 🎨 icons/                            # 扩展图标 (16/32/48/128px)
 │
 ├── 📂 src/
 │   ├── ⚙️ background/
-│   │   └── index.js                     # Service Worker — message routing + API dispatch
+│   │   └── index.js                     # Service Worker — 消息路由 + API 调度
 │   │
 │   ├── 📝 content/
-│   │   ├── index.js                     # Entry — floating button, toggle, observer
-│   │   ├── dom-parser.js                # TreeWalker — DOM traversal + text extraction
-│   │   ├── translator.js                # Coordinator — batching, caching, retry
-│   │   ├── injector.js                  # Display — replace original text with translation (<font> tags)
+│   │   ├── index.js                     # 入口 — 浮动按钮、翻译开关、观察器
+│   │   ├── dom-parser.js                # DOM 遍历 — TreeWalker 提取文本
+│   │   ├── translator.js                # 翻译协调器 — 批量分组、缓存、重试
+│   │   ├── injector.js                  # 双语注入 — 用译文替换原文（可还原）
 │   │   └── 🎬 subtitle/
-│   │       ├── youtube.js               # MAIN-world hook for timedtext + caption track catalog
-│   │       └── index.js                 # Isolated subtitle controller + low-latency overlay render
+│   │       ├── youtube.js               # MAIN world Hook：拦截 timedtext + 拉取字幕轨目录
+│   │       └── index.js                 # 字幕控制器：track/live 自动模式 + 低延迟叠加渲染
 │   │
-│   ├── 🔌 services/                     # Translation engine adapters
-│   │   ├── base.js                      # Abstract base class
-│   │   ├── google.js                    # Google Translate
-│   │   ├── bing.js                      # Microsoft Translator
-│   │   ├── deepl.js                     # DeepL
-│   │   ├── openai.js                    # OpenAI GPT
-│   │   ├── claude.js                    # Anthropic Claude
-│   │   ├── gemini.js                    # Google Gemini
-│   │   ├── deepseek.js                  # DeepSeek
-│   │   └── index.js                     # Registry + factory
+│   ├── 🔌 services/                     # 翻译引擎适配器
+│   │   ├── base.js                      # 抽象基类
+│   │   ├── google.js                    # Google 翻译（免费 API）
+│   │   ├── bing.js                      # 微软翻译（免费，需 token）
+│   │   ├── deepl.js                     # DeepL API
+│   │   ├── openai.js                    # OpenAI Chat Completions
+│   │   ├── claude.js                    # Anthropic Messages API
+│   │   ├── gemini.js                    # Google Gemini API
+│   │   ├── deepseek.js                  # DeepSeek API
+│   │   └── index.js                     # 服务注册表 + 工厂模式
 │   │
-│   ├── 🪟 popup/                        # Quick-action popup UI
-│   ├── ⚙️ options/                      # Full settings page
-│   ├── 🎨 styles/inject.css             # 9 themes + subtitle styles
-│   └── 🛠️ utils/                        # Storage + messaging wrappers
+│   ├── 🪟 popup/                        # 快捷操作弹窗
+│   ├── ⚙️ options/                      # 完整设置页面
+│   ├── 🎨 styles/inject.css             # 9 种主题 + 字幕样式
+│   └── 🛠️ utils/                        # Storage + Messaging 封装
 │
-├── 📄 README.md
-├── 📄 README.zh-CN.md
-└── 📄 LICENSE
+├── 📄 README.md                         # 中文主文档（GitHub 默认展示）
+├── 📄 README.en.md                      # English documentation
+├── 📄 README.zh-CN.md                   # 中文镜像（兼容旧链接）
+└── 📄 LICENSE                           # MIT 许可证
 ```
 
 <details>
-<summary><strong>Data Flow — Web Translation</strong></summary>
+<summary><strong>数据流 — 网页翻译</strong></summary>
 
 ```
-User clicks translate
-  → content/index.js dispatches
-    → dom-parser.js collects text blocks (TreeWalker)
-    → translator.js batches & groups (max 4000 chars)
+用户点击翻译
+  → content/index.js 调度
+    → dom-parser.js 收集文本块（TreeWalker 遍历）
+    → translator.js 批量分组（每批最大 4000 字符）
     → chrome.runtime.sendMessage → background/index.js
-      → services/*.js calls translation API
-    → results returned → injector.js injects bilingual <font> tags
+      → services/*.js 调用翻译 API
+    → 结果返回 → injector.js 注入双语 <font> 标签
 ```
 
 </details>
 
 <details>
-<summary><strong>Data Flow — Subtitle Translation</strong></summary>
+<summary><strong>数据流 — 字幕翻译</strong></summary>
 
 ```
-subtitle/youtube.js (MAIN-world hook captures timedtext + track catalog)
-  → subtitle/index.js selects source/translated tracks and runs track/live auto mode
-  → latest-active-cue alignment + cue prefetch + early render
-  → fallback: chrome.runtime.sendMessage → background → translation API
-  → bilingual subtitle overlay rendered on video
+subtitle/youtube.js（MAIN world 拦截 timedtext + 字幕轨目录）
+  → subtitle/index.js 选择 source/translated 轨并执行 track/live 自动模式
+  → 最新活跃 cue 对齐 + 轨道预取 + 提前渲染
+  → 回退链路：chrome.runtime.sendMessage → background → 翻译 API
+  → 在视频上渲染双语字幕覆盖层
 ```
 
 </details>
 
-### Subtitle Latency Fallback Plan (Backup Option)
+### 字幕低延迟后备方案（备用）
 
-If additional speed is needed in difficult videos, the next fallback option is:
+如果后续仍需进一步提速，可启用下列后备方案：
 
-- **Track batch translation queue** — send multiple adjacent subtitle groups in one request, then map results back by order.
-- **When to activate** — only when cache miss ratio is high or translation RTT becomes unstable.
-- **Safety guardrails** — strict punctuation/length boundaries, bounded batch size, and automatic fallback to single-group translation on mismatch.
+- **Track 批量翻译队列**：将相邻字幕句组打包为单次请求，再按顺序回填到每条字幕。
+- **启用条件**：仅在缓存未命中偏高或翻译 RTT 抖动明显时启用。
+- **安全兜底**：严格句边界与长度限制、受控批量大小、回填不一致时自动退回单句翻译。
 
 <details>
-<summary><strong>Design Decisions</strong></summary>
+<summary><strong>设计决策</strong></summary>
 
-| Decision | Choice | Rationale |
+| 决策 | 选择 | 理由 |
 |:---|:---|:---|
-| Build tools | None (vanilla JS) | Zero config, instant reload |
-| UI framework | None | Lightweight, ~0 overhead |
-| Translation injection | `<font>` + CSS classes | Works with any page layout |
-| Messaging | `chrome.runtime.sendMessage` | Manifest V3 standard |
-| Storage | `chrome.storage.local` | Persistent, cross-session |
-| Subtitle tracking | `requestAnimationFrame` | Smooth 60fps position sync |
+| 构建工具 | 无（原生 JS） | 零配置、修改即生效 |
+| UI 框架 | 无 | 轻量级、零运行时开销 |
+| 翻译注入方式 | `<font>` + CSS class | 兼容所有页面布局 |
+| 消息通信 | `chrome.runtime.sendMessage` | Manifest V3 标准方案 |
+| 存储 | `chrome.storage.local` | 持久化、跨会话保持 |
+| 字幕位置追踪 | `requestAnimationFrame` | 60fps 平滑同步 |
 
 </details>
 
 ---
 
-## ⌨️ Shortcuts
+## ⌨️ 快捷键
 
-| Shortcut | Action |
+| 快捷键 | 功能 |
 |:---:|:---|
-| `Alt + A` | Toggle page translation |
+| `Alt + A` | 开启/关闭页面翻译 |
 
-> Customize at `chrome://extensions/shortcuts`
+> 可在 `chrome://extensions/shortcuts` 自定义快捷键
 
 ---
 
-## 📦 Chrome Web Store Release
+## 📦 Chrome Web Store 发布
 
-For API-based upload and publish (v2), see:
+如果你要走 API v2 自动上传与发布流程，请看：
 
 - `docs/chrome-web-store-api-v2.zh-CN.md`
 - `docs/playwright-cws-workflow.zh-CN.md`
 
 ---
 
-## 🤝 Contributing
+## 🤝 参与贡献
 
-Contributions are welcome! Here's how:
+欢迎贡献代码！以下是参与方式：
 
 ```bash
-# 1. Fork & clone
+# 1. Fork 并克隆
 git clone https://github.com/YOUR_USERNAME/awe-subtranslate-chrome.git
 
-# 2. Create feature branch
+# 2. 创建功能分支
 git checkout -b feature/amazing-feature
 
-# 3. Make changes & test (load unpacked in Chrome)
+# 3. 开发 & 测试（在 Chrome 中加载已解压的扩展程序）
 
-# 4. Commit & push
-git commit -m "feat: add amazing feature"
+# 4. 提交 & 推送
+git commit -m "feat: 添加新功能"
 git push origin feature/amazing-feature
 
-# 5. Open a Pull Request
+# 5. 发起 Pull Request
 ```
 
 <details>
-<summary><strong>Development Tips</strong></summary>
+<summary><strong>开发小贴士</strong></summary>
 
-- **No build step** — edit files, reload extension, done
-- **Background debug** — `chrome://extensions/` → click service worker link
-- **Content debug** — page DevTools → Console → filter by `[IMT]`
-- **Popup debug** — right-click popup → Inspect
+- **无需构建** — 修改代码后直接刷新扩展即可
+- **调试 Background** — `chrome://extensions/` → 点击 Service Worker 链接
+- **调试 Content Script** — 网页 DevTools → Console → 搜索 `[IMT]`
+- **调试 Popup** — 右键点击弹窗 → 检查
 
 </details>
 
 ---
 
-## 📄 License
+## 📄 许可证
 
 [MIT](LICENSE) © 2025 [cloveric](https://github.com/cloveric)
 
@@ -342,10 +343,11 @@ git push origin feature/amazing-feature
 
 <br/>
 
-**If you find this useful, a ⭐ would be greatly appreciated!**
+**觉得有用的话，请给个 ⭐ 支持一下！**
 
 <br/>
 
-Made with ❤️ by [cloveric](https://github.com/cloveric)
+由 [cloveric](https://github.com/cloveric) 用 ❤️ 打造
 
 </div>
+
