@@ -239,10 +239,20 @@ window.IMT = window.IMT || {};
   let errorPausedUntil = 0;
   let translateVersion = 0; // 版本计数器，替代单 key 守卫
 
+  function shouldSuppressSubtitleErrorFeedback() {
+    // YouTube 原生翻译轨已可用时，API fallback 的偶发失败不应中断用户体验。
+    return isYouTube && hasYouTubeNativeTranslatedTrack();
+  }
+
   async function translateText(text) {
     if (!text || !text.trim()) return { text: '', version: -1 };
     const key = text.trim();
     if (translatedCache.has(key)) return { text: translatedCache.get(key), version: -1 };
+
+    if (shouldSuppressSubtitleErrorFeedback()) {
+      errorCount = 0;
+      errorPausedUntil = 0;
+    }
 
     if (errorCount >= MAX_ERRORS) {
       if (Date.now() < errorPausedUntil) {
@@ -269,8 +279,15 @@ window.IMT = window.IMT || {};
       if (resp?.error) throw new Error(resp.error);
       return { text: '', version: version };
     } catch (e) {
-      errorCount++;
       const msg = e?.message || String(e);
+      if (shouldSuppressSubtitleErrorFeedback()) {
+        errorCount = 0;
+        errorPausedUntil = 0;
+        console.warn('[IMT Subtitle] 非阻断 fallback 翻译失败（原生轨可用）:', msg);
+        return { text: '', version: version };
+      }
+
+      errorCount++;
       console.error('[IMT Subtitle] 翻译失败 (' + errorCount + '/' + MAX_ERRORS + '):', msg);
       if (errorCount === 1) showErrorOnVideo('字幕翻译失败: ' + msg.slice(0, 60));
       if (errorCount >= MAX_ERRORS) {
