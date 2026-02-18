@@ -383,6 +383,7 @@ window.IMT = window.IMT || {};
   const YT_TRACK_PREFETCH_INTERVAL_MS = 60;
   const YT_TRACK_WARMUP_COUNT = 14;
   const YT_TRACK_TRANSLATED_MAX_START_DELTA_MS = 1400;
+  const YT_TRACK_TRANSLATED_DIRECT_STALE_MS = 320;
   const YT_TRACK_EARLY_RENDER_MS = 520;
   const YT_TRACK_SENTENCE_MAX_CUES = 2;
   const YT_TRACK_SENTENCE_MAX_CHARS = 82;
@@ -825,6 +826,30 @@ window.IMT = window.IMT || {};
     return { index: -1, cursor: idx };
   }
 
+  function pickLatestStartedActiveCueIndex(cues, activeIndex, ms) {
+    if (
+      !Number.isFinite(activeIndex) ||
+      activeIndex < 0 ||
+      !Number.isFinite(ms) ||
+      !Array.isArray(cues) ||
+      cues.length === 0
+    ) {
+      return -1;
+    }
+
+    const maxIdx = cues.length - 1;
+    let latestIndex = Math.min(activeIndex, maxIdx);
+    for (let idx = latestIndex + 1; idx <= maxIdx; idx++) {
+      const cue = cues[idx];
+      if (!cue || !Number.isFinite(cue.startMs)) break;
+      if (cue.startMs > ms) break;
+      if (Number.isFinite(cue.endMs) && ms < cue.endMs) {
+        latestIndex = idx;
+      }
+    }
+    return latestIndex;
+  }
+
   function findNearestCueByStartMs(cues, targetStartMs) {
     if (!Array.isArray(cues) || cues.length === 0 || !Number.isFinite(targetStartMs)) return null;
 
@@ -853,14 +878,16 @@ window.IMT = window.IMT || {};
 
   function findYouTubeCueIndexAtMs(ms) {
     const result = findCueIndexAtMsWithCursor(ytTrackCues, ms, ytTrackCursor);
-    ytTrackCursor = result.cursor;
-    return result.index;
+    const latestIndex = pickLatestStartedActiveCueIndex(ytTrackCues, result.index, ms);
+    ytTrackCursor = latestIndex >= 0 ? latestIndex : result.cursor;
+    return latestIndex;
   }
 
   function findYouTubeTranslatedCueIndexAtMs(ms) {
     const result = findCueIndexAtMsWithCursor(ytTrackTranslatedCues, ms, ytTrackTranslatedCursor);
-    ytTrackTranslatedCursor = result.cursor;
-    return result.index;
+    const latestIndex = pickLatestStartedActiveCueIndex(ytTrackTranslatedCues, result.index, ms);
+    ytTrackTranslatedCursor = latestIndex >= 0 ? latestIndex : result.cursor;
+    return latestIndex;
   }
 
   function findYouTubeUpcomingCueIndexAtMs(ms) {
@@ -962,6 +989,18 @@ window.IMT = window.IMT || {};
     if (!hasYouTubeNativeTranslatedTrack()) return '';
 
     if (sourceCue) {
+      const directIndex = findYouTubeTranslatedCueIndexAtMs(nowMs);
+      if (directIndex >= 0) {
+        const directCue = ytTrackTranslatedCues[directIndex];
+        if (
+          directCue &&
+          Number.isFinite(directCue.startMs) &&
+          directCue.startMs >= sourceCue.startMs - YT_TRACK_TRANSLATED_DIRECT_STALE_MS
+        ) {
+          return directCue.text || '';
+        }
+      }
+
       // 重叠字幕场景下，按 startMs 做最近邻对齐比“按当前时间命中 active cue”更稳定
       const nearestCue = findNearestCueByStartMs(ytTrackTranslatedCues, sourceCue.startMs);
       if (!nearestCue) return '';
