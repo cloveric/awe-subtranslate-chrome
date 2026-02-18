@@ -4,7 +4,7 @@
 
 # Awe SubTranslate
 
-### _Read any website and watch subtitles in two languages, instantly._
+### _YouTube-first bilingual subtitle translation, with web-page translation as secondary support._
 
 [![Chrome](https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-0F9D58?style=for-the-badge&logo=google&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
@@ -19,14 +19,14 @@
 
 <br/>
 
-> _Turn foreign websites into readable translated pages in one click._
-> _Watch YouTube with low-latency bilingual subtitles on top._
+> _YouTube subtitle translation first: low-latency bilingual overlays._
+> _Web-page translation is included as a secondary workflow._
 
 <br/>
 
 </div>
 
-## 🌟 Why Awe SubTranslate
+## 🌟 Why Awe SubTranslate (YouTube First)
 
 <table>
 <tr>

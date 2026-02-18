@@ -4,7 +4,7 @@
 
 # Awe SubTranslate
 
-### _一键看懂外语网页，实时双语观看视频字幕。_
+### _主打 YouTube 双语字幕翻译，网页正文翻译为辅。_
 
 [![Chrome](https://img.shields.io/badge/Chrome-扩展程序-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-0F9D58?style=for-the-badge&logo=google&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
@@ -19,14 +19,14 @@
 
 <br/>
 
-> _把任何外语网页一键变成可读译文页面。_
-> _在 YouTube 上低延迟叠加中英双语字幕。_
+> _YouTube 字幕翻译优先：低延迟叠加中英双语字幕。_
+> _同时支持网页正文一键翻译。_
 
 <br/>
 
 </div>
 
-## 🌟 为什么选 Awe SubTranslate
+## 🌟 为什么选 Awe SubTranslate（YouTube 优先）
 
 <table>
 <tr>
