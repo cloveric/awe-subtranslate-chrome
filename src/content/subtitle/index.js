@@ -1613,7 +1613,7 @@ window.IMT = window.IMT || {};
           const playerRightBound = hasPlayerRect ? Math.round(playerRect.right) : Math.round(window.innerWidth - 8);
           const playerInnerWidth = Math.max(260, playerRightBound - playerLeftBound - 16);
 
-          // 默认 static 居中替换；仅在保留原字幕时 live 使用偏左布局
+          // 默认 static 居中替换；live 也使用水平居中，避免不同视频出现偏左体验
           if (ytMode === 'live' && !document.documentElement.classList.contains('imt-yt-caption-replace')) {
             resetYouTubeStaticAnchor();
             const viewportMaxWidth = Math.max(
@@ -1621,7 +1621,7 @@ window.IMT = window.IMT || {};
               Math.min(Math.round(window.innerWidth * 0.9), playerInnerWidth)
             );
             const targetTop = rect.top;
-            const targetLeft = Math.max(playerLeftBound + 8, rect.left + 10);
+            const targetLeft = Math.round(rect.left + rect.width / 2);
             const targetWidth = Math.max(260, Math.min(viewportMaxWidth, Math.round(rect.width * 1.0)));
 
             if (
@@ -1645,13 +1645,14 @@ window.IMT = window.IMT || {};
 
             const nextTop = Math.round(ytLiveAnchorTop);
             const nextWidth = Math.max(260, Math.min(viewportMaxWidth, Math.round(ytLiveAnchorWidth)));
-            const minLeft = playerLeftBound + 8;
-            const maxLeft = Math.max(minLeft, playerRightBound - nextWidth - 8);
-            const nextLeft = Math.max(minLeft, Math.min(Math.round(ytLiveAnchorLeft), maxLeft));
+            const half = Math.round(nextWidth / 2);
+            const minCenter = playerLeftBound + half + 8;
+            const maxCenter = playerRightBound - half - 8;
+            const nextLeft = Math.max(minCenter, Math.min(Math.round(ytLiveAnchorLeft), maxCenter));
             const nextMaxWidth = nextWidth + 'px';
             if (ytAppliedMode !== 'live') {
-              ytTranslatedEl.style.transform = 'none';
-              ytTranslatedEl.style.textAlign = 'left';
+              ytTranslatedEl.style.transform = 'translateX(-50%)';
+              ytTranslatedEl.style.textAlign = 'center';
               ytAppliedMode = 'live';
             }
             if (ytAppliedBottom !== null) {
