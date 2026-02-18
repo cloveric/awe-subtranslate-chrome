@@ -12,7 +12,7 @@
 
   const SERVICE_NAMES = {
     google: 'Google 翻译', bing: '微软翻译', deepl: 'DeepL',
-    openai: 'OpenAI', claude: 'Claude', gemini: 'Gemini', deepseek: 'DeepSeek',
+    openai: 'OpenAI', claude: 'Claude', gemini: 'Gemini', deepseek: 'DeepSeek', zhipu: '智谱 GLM',
   };
 
   function updateTranslateButtonState(translated) {

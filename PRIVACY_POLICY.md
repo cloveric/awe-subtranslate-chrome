@@ -32,6 +32,7 @@ Depending on user choice, translation requests may be sent to:
 - Anthropic Claude
 - Google Gemini
 - DeepSeek
+- Zhipu GLM
 
 No translation traffic is routed through a developer-owned backend server. Third-party handling of submitted data is governed by each provider's own terms and privacy policy.
 

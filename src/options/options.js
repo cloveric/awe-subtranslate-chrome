@@ -52,6 +52,9 @@
   document.getElementById('cfg-deepseek-key').value = serviceConfigs.deepseek?.deepseekApiKey || '';
   document.getElementById('cfg-deepseek-url').value = serviceConfigs.deepseek?.deepseekBaseUrl || '';
   document.getElementById('cfg-deepseek-model').value = serviceConfigs.deepseek?.deepseekModel || 'deepseek-chat';
+  document.getElementById('cfg-zhipu-key').value = serviceConfigs.zhipu?.zhipuApiKey || '';
+  document.getElementById('cfg-zhipu-url').value = serviceConfigs.zhipu?.zhipuBaseUrl || '';
+  document.getElementById('cfg-zhipu-model').value = serviceConfigs.zhipu?.zhipuModel || 'glm-4.7-flash';
   document.getElementById('cfg-gemini-key').value = serviceConfigs.gemini?.geminiApiKey || '';
   document.getElementById('cfg-gemini-model').value = serviceConfigs.gemini?.geminiModel || 'gemini-2.5-flash-preview-05-20';
 
@@ -112,6 +115,11 @@
         deepseekApiKey: document.getElementById('cfg-deepseek-key').value.trim(),
         deepseekBaseUrl: document.getElementById('cfg-deepseek-url').value.trim(),
         deepseekModel: document.getElementById('cfg-deepseek-model').value.trim(),
+      },
+      zhipu: {
+        zhipuApiKey: document.getElementById('cfg-zhipu-key').value.trim(),
+        zhipuBaseUrl: document.getElementById('cfg-zhipu-url').value.trim(),
+        zhipuModel: document.getElementById('cfg-zhipu-model').value.trim(),
       },
       gemini: {
         geminiApiKey: document.getElementById('cfg-gemini-key').value.trim(),

@@ -32,6 +32,7 @@ Awe SubTranslate（以下简称“本扩展”）用于网页文本与视频字�
 - Anthropic Claude
 - Google Gemini
 - DeepSeek
+- 智谱 GLM
 
 开发者不通过自建后端服务器中转翻译流量。第三方服务对提交数据的处理受其自身条款与隐私政策约束。
 

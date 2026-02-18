@@ -27,7 +27,7 @@ manifest.json
 │       ├── youtube.js           # [Legacy] MAIN world hook (disabled by default)
 │       └── index.js             # [isolated] YouTube subtitle observer + translation display
 ├── src/services/                # Translation engines (ES Module)
-│   ├── base.js → google.js, bing.js, deepl.js, openai.js, claude.js, gemini.js, deepseek.js
+│   ├── base.js → google.js, bing.js, deepl.js, openai.js, claude.js, gemini.js, deepseek.js, zhipu.js
 │   └── index.js                 # Service registry + factory
 ├── src/popup/                   # Quick action popup
 ├── src/options/                 # Settings page
@@ -65,6 +65,7 @@ subtitle/index.js (isolated world, MutationObserver on caption DOM)
 | Claude | Yes | api.anthropic.com/v1/messages |
 | Gemini | Yes | generativelanguage.googleapis.com |
 | DeepSeek | Yes | api.deepseek.com |
+| Zhipu GLM | Yes | open.bigmodel.cn/api/paas/v4/chat/completions |
 
 ## Development
 
@@ -84,4 +85,4 @@ subtitle/index.js (isolated world, MutationObserver on caption DOM)
 - Subtitle translation runs in isolated world via MutationObserver on YouTube caption DOM
 - Backup latency option (documented): track batch translation queue for adjacent cue groups, enabled only under high-miss/high-RTT conditions
 - Google/Bing are free APIs, no configuration needed
-- AI engines (OpenAI/Claude/Gemini/DeepSeek) require API Key in settings
+- AI engines (OpenAI/Claude/Gemini/DeepSeek/Zhipu GLM) require API Key in settings

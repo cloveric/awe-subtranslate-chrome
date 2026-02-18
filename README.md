@@ -9,7 +9,7 @@
 [![Chrome](https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-0F9D58?style=for-the-badge&logo=google&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
 [![License](https://img.shields.io/badge/License-MIT-F4B400?style=for-the-badge)](LICENSE)
-[![Engines](https://img.shields.io/badge/Engines-7-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
+[![Engines](https://img.shields.io/badge/Engines-8-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
 
 **[Features](#-features)** · **[Installation](#-installation)** · **[Engines](#-supported-engines)** · **[Usage](#-usage)** · **[Architecture](#-architecture)** · **[Privacy](PRIVACY_POLICY.md)** · **[Contributing](#-contributing)**
 
@@ -154,6 +154,13 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 <td>Chinese ↔ English, cost-effective</td>
 </tr>
 
+<tr>
+<td align="center"><strong>Zhipu GLM</strong></td>
+<td align="center">🔑 Required</td>
+<td align="center">LLM</td>
+<td>GLM family support, fast translation with GLM-4.7-Flash</td>
+</tr>
+
 </table>
 
 ---
@@ -214,6 +221,7 @@ awe-subtranslate-chrome/
 │   │   ├── claude.js                    # Anthropic Claude
 │   │   ├── gemini.js                    # Google Gemini
 │   │   ├── deepseek.js                  # DeepSeek
+│   │   ├── zhipu.js                     # Zhipu GLM
 │   │   └── index.js                     # Registry + factory
 │   │
 │   ├── 🪟 popup/                        # Quick-action popup UI
