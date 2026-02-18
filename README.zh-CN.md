@@ -19,8 +19,8 @@
 
 <br/>
 
-> _把任何外语网页变成双语阅读界面。_
-> _在 YouTube 上实时叠加字幕翻译。_
+> _把任何外语网页一键变成可读译文页面。_
+> _在 YouTube 上低延迟叠加中英双语字幕。_
 
 <br/>
 
@@ -46,10 +46,11 @@
 
 ### 🎬 实时字幕翻译伴随
 
-- **YouTube 支持** — 播放时实时叠加双语字幕
-- **低延迟优先链路** — 通过轨道预取与提前渲染降低体感延迟
+- **YouTube 支持** — 点击播放器内 `译` 按钮即可开启字幕翻译
+- **CC 自动协助** — 需要时可自动开启 YouTube 原生字幕
+- **低延迟优先链路** — 优先使用 YouTube 原生翻译轨，缺失时回退到缓存翻译引擎
+- **重叠 cue 对齐** — 在 rollup 场景优先选择最新活跃 cue，减少慢半拍
 - **实时位置同步** — 译文跟随原字幕移动，不遮挡关键画面
-- **逐词字幕友好** — 对 rollup 字幕场景保持稳定输出
 - **容错反馈清晰** — 连续失败会自动暂停并提示你检查配置
 
 </td>
@@ -169,13 +170,15 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 | ✍ 选中文本翻译 | 先选中文本 → 右键 → 「翻译选中文本」 |
 | 📌 弹出窗口 | 点击扩展图标 → 「翻译此页面」 |
 
+> 页面翻译仅作用于网页正文，不会联动开启视频字幕翻译。
+
 ### 视频字幕翻译
 
 | 步骤 | 操作 |
 |:---:|:---|
 | **1** | 打开 YouTube 视频 |
-| **2** | 在播放器上开启字幕 / CC |
-| **3** | 翻译会自动显示在原始字幕下方 |
+| **2** | 点击播放器内 `译` 按钮（在 CC 按钮旁） |
+| **3** | 扩展在视频上叠加中英双语字幕，并持续跟随播放器字幕同步 |
 
 ### 随时切换翻译引擎
 
@@ -202,8 +205,8 @@ awe-subtranslate-chrome/
 │   │   ├── translator.js                # 翻译协调器 — 批量分组、缓存、重试
 │   │   ├── injector.js                  # 双语注入 — 用译文替换原文（可还原）
 │   │   └── 🎬 subtitle/
-│   │       ├── youtube.js               # [Legacy] MAIN world 字幕 Hook（默认不启用）
-│   │       └── index.js                 # [Isolated] MutationObserver + 译文覆盖层
+│   │       ├── youtube.js               # MAIN world Hook：拦截 timedtext + 拉取字幕轨目录
+│   │       └── index.js                 # 字幕控制器：track/live 自动模式 + 低延迟叠加渲染
 │   │
 │   ├── 🔌 services/                     # 翻译引擎适配器
 │   │   ├── base.js                      # 抽象基类
@@ -245,10 +248,11 @@ awe-subtranslate-chrome/
 <summary><strong>数据流 — 字幕翻译</strong></summary>
 
 ```
-subtitle/index.js（MutationObserver 监听字幕 DOM 变化）
-  → track/live 自动模式 + 轨道预取 + 提前渲染
-  → chrome.runtime.sendMessage → background → 翻译 API
-  → 在视频上显示双语字幕覆盖层
+subtitle/youtube.js（MAIN world 拦截 timedtext + 字幕轨目录）
+  → subtitle/index.js 选择 source/translated 轨并执行 track/live 自动模式
+  → 最新活跃 cue 对齐 + 轨道预取 + 提前渲染
+  → 回退链路：chrome.runtime.sendMessage → background → 翻译 API
+  → 在视频上渲染双语字幕覆盖层
 ```
 
 </details>

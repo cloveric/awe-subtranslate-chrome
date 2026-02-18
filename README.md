@@ -19,8 +19,8 @@
 
 <br/>
 
-> _Turn foreign websites into readable bilingual pages in one click._
-> _Watch YouTube with live subtitle translation on top._
+> _Turn foreign websites into readable translated pages in one click._
+> _Watch YouTube with low-latency bilingual subtitles on top._
 
 <br/>
 
@@ -46,10 +46,11 @@
 
 ### 🎬 Real-Time Subtitle Companion
 
-- **YouTube ready** — live bilingual subtitle overlay while watching
-- **Latency-first subtitle path** — track prefetch + early render to reduce perceived delay
+- **YouTube ready** — click player-side `译` button to start subtitle translation
+- **Auto CC assist** — subtitle translation can auto-enable YouTube CC when needed
+- **Latency-first subtitle path** — native translated track first, then cached engine fallback
+- **Overlap-cue alignment** — picks latest active cue to reduce half-beat lag in rollup streams
 - **Smooth subtitle syncing** — tracks subtitle position in real time
-- **Rollup caption handling** — stable output even for word-by-word subtitle updates
 - **Resilient fallback behavior** — pauses on repeated failures and shows clear feedback
 
 </td>
@@ -169,13 +170,15 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 | ✍ Selection translate | Select text → right-click → "Translate selected text" |
 | 📌 Popup | Click extension icon → "Translate This Page" |
 
+> Page translation only affects page body text, and does not toggle video subtitle translation.
+
 ### Translate video subtitles
 
 | Step | Action |
 |:---:|:---|
 | **1** | Open a YouTube video |
-| **2** | Enable subtitles / CC on the video player |
-| **3** | Translations appear automatically below original subtitles |
+| **2** | Click the player-side `译` button (next to CC) |
+| **3** | Extension renders bilingual subtitle overlay and keeps it synced with player subtitles |
 
 ### Switch engine anytime
 
@@ -202,8 +205,8 @@ awe-subtranslate-chrome/
 │   │   ├── translator.js                # Coordinator — batching, caching, retry
 │   │   ├── injector.js                  # Display — replace original text with translation (<font> tags)
 │   │   └── 🎬 subtitle/
-│   │       ├── youtube.js               # [Legacy] MAIN-world subtitle hook (disabled by default)
-│   │       └── index.js                 # [Isolated] Observer + translation overlay
+│   │       ├── youtube.js               # MAIN-world hook for timedtext + caption track catalog
+│   │       └── index.js                 # Isolated subtitle controller + low-latency overlay render
 │   │
 │   ├── 🔌 services/                     # Translation engine adapters
 │   │   ├── base.js                      # Abstract base class
@@ -245,10 +248,11 @@ User clicks translate
 <summary><strong>Data Flow — Subtitle Translation</strong></summary>
 
 ```
- subtitle/index.js (MutationObserver watches caption DOM)
-  → track/live auto mode + cue prefetch + early render
-  → chrome.runtime.sendMessage → background → translation API
-  → bilingual subtitle overlay displayed on video
+subtitle/youtube.js (MAIN-world hook captures timedtext + track catalog)
+  → subtitle/index.js selects source/translated tracks and runs track/live auto mode
+  → latest-active-cue alignment + cue prefetch + early render
+  → fallback: chrome.runtime.sendMessage → background → translation API
+  → bilingual subtitle overlay rendered on video
 ```
 
 </details>
