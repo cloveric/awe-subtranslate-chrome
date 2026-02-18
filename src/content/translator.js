@@ -43,13 +43,15 @@ window.IMT.Translator = {
     // 分批翻译
     const batches = this._createBatches(toTranslate);
 
+    const maxConcurrent = service === 'zhipu' ? 1 : this.MAX_CONCURRENT;
+
     // 并发执行批次（限制并发数）
-    for (let i = 0; i < batches.length; i += this.MAX_CONCURRENT) {
+    for (let i = 0; i < batches.length; i += maxConcurrent) {
       if (!shouldContinue()) {
         this._clearLoadingState(toTranslate);
         return;
       }
-      const chunk = batches.slice(i, i + this.MAX_CONCURRENT);
+      const chunk = batches.slice(i, i + maxConcurrent);
       await Promise.all(
         chunk.map((batch) => this._translateBatch(batch, targetLang, service, theme, shouldContinue))
       );
