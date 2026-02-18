@@ -238,10 +238,17 @@ window.IMT = window.IMT || {};
   const ERROR_COOLDOWN_MS = 15000;
   let errorPausedUntil = 0;
   let translateVersion = 0; // 版本计数器，替代单 key 守卫
+  let subtitleErrorLastMsg = '';
+  let subtitleErrorLastAt = 0;
+  let subtitleErrorHideTimer = null;
+  let subtitlePauseNoticeUntil = 0;
 
   function shouldSuppressSubtitleErrorFeedback() {
-    // YouTube 原生翻译轨已可用时，API fallback 的偶发失败不应中断用户体验。
-    return isYouTube && hasYouTubeNativeTranslatedTrack();
+    // YouTube 已有可见译文或原生翻译轨可用时，fallback 偶发失败不应中断体验。
+    return isYouTube && (
+      hasYouTubeNativeTranslatedTrack() ||
+      (typeof ytLastRenderedTranslated === 'string' && ytLastRenderedTranslated.trim().length > 0)
+    );
   }
 
   async function translateText(text) {
@@ -252,6 +259,7 @@ window.IMT = window.IMT || {};
     if (shouldSuppressSubtitleErrorFeedback()) {
       errorCount = 0;
       errorPausedUntil = 0;
+      subtitlePauseNoticeUntil = 0;
     }
 
     if (errorCount >= MAX_ERRORS) {
@@ -261,6 +269,7 @@ window.IMT = window.IMT || {};
       // 冷却结束后自动恢复
       errorCount = 0;
       errorPausedUntil = 0;
+      subtitlePauseNoticeUntil = 0;
     }
 
     var version = ++translateVersion;
@@ -273,6 +282,7 @@ window.IMT = window.IMT || {};
       // 如果版本已过期，丢弃结果但仍缓存
       if (resp?.results?.[0]) {
         errorCount = 0;
+        subtitlePauseNoticeUntil = 0;
         translatedCache.set(key, resp.results[0]);
         return { text: resp.results[0], version: version };
       }
@@ -283,6 +293,7 @@ window.IMT = window.IMT || {};
       if (shouldSuppressSubtitleErrorFeedback()) {
         errorCount = 0;
         errorPausedUntil = 0;
+        subtitlePauseNoticeUntil = 0;
         console.warn('[IMT Subtitle] 非阻断 fallback 翻译失败（原生轨可用）:', msg);
         return { text: '', version: version };
       }
@@ -292,26 +303,42 @@ window.IMT = window.IMT || {};
       if (errorCount === 1) showErrorOnVideo('字幕翻译失败: ' + msg.slice(0, 60));
       if (errorCount >= MAX_ERRORS) {
         errorPausedUntil = Date.now() + ERROR_COOLDOWN_MS;
-        showErrorOnVideo('字幕翻译已暂停，15 秒后自动重试');
+        if (errorPausedUntil > subtitlePauseNoticeUntil) {
+          subtitlePauseNoticeUntil = errorPausedUntil;
+          showErrorOnVideo('字幕翻译已暂停，15 秒后自动重试');
+        }
       }
       return { text: '', version: version };
     }
   }
 
   function showErrorOnVideo(msg) {
-    document.querySelectorAll('.imt-subtitle-error').forEach((el) => el.remove());
-    const el = document.createElement('div');
-    el.className = 'imt-subtitle-error';
+    const now = Date.now();
+    if (subtitleErrorLastMsg === msg && now - subtitleErrorLastAt < 1200) return;
+    subtitleErrorLastMsg = msg;
+    subtitleErrorLastAt = now;
+
+    let el = document.querySelector('.imt-subtitle-error');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'imt-subtitle-error';
+      el.style.cssText = `
+        position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+        z-index: 2147483647; background: rgba(220,38,38,0.9); color: #fff;
+        padding: 12px 24px; border-radius: 8px; font-size: 16px;
+        font-family: -apple-system, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        pointer-events: none;
+      `;
+      document.body.appendChild(el);
+    }
     el.textContent = msg;
-    el.style.cssText = `
-      position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
-      z-index: 2147483647; background: rgba(220,38,38,0.9); color: #fff;
-      padding: 12px 24px; border-radius: 8px; font-size: 16px;
-      font-family: -apple-system, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      pointer-events: none;
-    `;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 5000);
+
+    if (subtitleErrorHideTimer) clearTimeout(subtitleErrorHideTimer);
+    subtitleErrorHideTimer = setTimeout(() => {
+      const current = document.querySelector('.imt-subtitle-error');
+      if (current) current.remove();
+      subtitleErrorHideTimer = null;
+    }, 5000);
   }
 
   // ========================
@@ -1893,6 +1920,7 @@ window.IMT = window.IMT || {};
 
     const zhText = normalizeYouTubeCaptionText(translatedText);
     if (!zhText) return;
+    document.querySelectorAll('.imt-subtitle-error').forEach((el) => el.remove());
     const enText = normalizeYouTubeCaptionText(originalText || '');
 
     if (ytLastRenderedTranslated !== zhText || ytLastRenderedOriginal !== enText) {
