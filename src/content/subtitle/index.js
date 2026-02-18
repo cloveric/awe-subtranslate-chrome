@@ -961,24 +961,21 @@ window.IMT = window.IMT || {};
   function getYouTubeNativeTranslatedText(sourceCue, nowMs) {
     if (!hasYouTubeNativeTranslatedTrack()) return '';
 
+    if (sourceCue) {
+      // 重叠字幕场景下，按 startMs 做最近邻对齐比“按当前时间命中 active cue”更稳定
+      const nearestCue = findNearestCueByStartMs(ytTrackTranslatedCues, sourceCue.startMs);
+      if (!nearestCue) return '';
+      if (Math.abs(nearestCue.startMs - sourceCue.startMs) > YT_TRACK_TRANSLATED_MAX_START_DELTA_MS) {
+        return '';
+      }
+      return nearestCue.text || '';
+    }
+
     const directIndex = findYouTubeTranslatedCueIndexAtMs(nowMs);
     if (directIndex >= 0) {
       return (ytTrackTranslatedCues[directIndex] && ytTrackTranslatedCues[directIndex].text) || '';
     }
-
-    if (!sourceCue) return '';
-
-    const startAlignedIndex = findYouTubeTranslatedCueIndexAtMs(sourceCue.startMs + 80);
-    if (startAlignedIndex >= 0) {
-      return (ytTrackTranslatedCues[startAlignedIndex] && ytTrackTranslatedCues[startAlignedIndex].text) || '';
-    }
-
-    const nearestCue = findNearestCueByStartMs(ytTrackTranslatedCues, sourceCue.startMs);
-    if (!nearestCue) return '';
-    if (Math.abs(nearestCue.startMs - sourceCue.startMs) > YT_TRACK_TRANSLATED_MAX_START_DELTA_MS) {
-      return '';
-    }
-    return nearestCue.text || '';
+    return '';
   }
 
   function shouldUseYouTubeTrackMode() {
