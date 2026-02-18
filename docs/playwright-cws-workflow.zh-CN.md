@@ -19,7 +19,7 @@ npm run cws:open
 打开账号页（用于检查/设置联系邮箱）：
 
 ```powershell
-$env:CWS_PUBLISHER_ID="74c7647e-2a78-4c78-91d0-6c74dc567e87"
+$env:CWS_PUBLISHER_ID="<YOUR_CWS_PUBLISHER_ID>"
 npm run cws:account
 ```
 
