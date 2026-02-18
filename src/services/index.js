@@ -8,7 +8,6 @@ import { OpenAITranslate } from './openai.js';
 import { ClaudeTranslate } from './claude.js';
 import { GeminiTranslate } from './gemini.js';
 import { DeepSeekTranslate } from './deepseek.js';
-import { ZhipuTranslate } from './zhipu.js';
 
 /** 所有可用服务 */
 const SERVICE_CLASSES = {
@@ -19,7 +18,6 @@ const SERVICE_CLASSES = {
   claude: ClaudeTranslate,
   gemini: GeminiTranslate,
   deepseek: DeepSeekTranslate,
-  zhipu: ZhipuTranslate,
 };
 
 /** 服务实例缓存 */

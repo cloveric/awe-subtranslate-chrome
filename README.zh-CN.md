@@ -9,7 +9,7 @@
 [![Chrome](https://img.shields.io/badge/Chrome-扩展程序-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/cloveric/awe-subtranslate-chrome)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-0F9D58?style=for-the-badge&logo=google&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
 [![License](https://img.shields.io/badge/许可证-MIT-F4B400?style=for-the-badge)](LICENSE)
-[![Engines](https://img.shields.io/badge/翻译引擎-8个-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
+[![Engines](https://img.shields.io/badge/翻译引擎-7个-DB4437?style=for-the-badge)](https://github.com/cloveric/awe-subtranslate-chrome)
 
 **[功能特性](#-功能特性)** · **[安装指南](#-安装指南)** · **[翻译引擎](#-翻译引擎)** · **[使用方法](#-使用方法)** · **[技术架构](#-技术架构)** · **[隐私政策](PRIVACY_POLICY.zh-CN.md)** · **[参与贡献](#-参与贡献)**
 
@@ -154,13 +154,6 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 <td>中英翻译佳、性价比高</td>
 </tr>
 
-<tr>
-<td align="center"><strong>智谱 GLM</strong></td>
-<td align="center">🔑 需要</td>
-<td align="center">大模型</td>
-<td>支持 GLM 系列，GLM-4.7-Flash 低延迟翻译</td>
-</tr>
-
 </table>
 
 ---
@@ -221,7 +214,6 @@ awe-subtranslate-chrome/
 │   │   ├── claude.js                    # Anthropic Messages API
 │   │   ├── gemini.js                    # Google Gemini API
 │   │   ├── deepseek.js                  # DeepSeek API
-│   │   ├── zhipu.js                     # 智谱 GLM API
 │   │   └── index.js                     # 服务注册表 + 工厂模式
 │   │
 │   ├── 🪟 popup/                        # 快捷操作弹窗
