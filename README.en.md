@@ -292,15 +292,6 @@ If additional speed is needed in difficult videos, the next fallback option is:
 
 ---
 
-## 📦 Chrome Web Store Release
-
-For API-based upload and publish (v2), see:
-
-- `docs/chrome-web-store-api-v2.zh-CN.md`
-- `docs/playwright-cws-workflow.zh-CN.md`
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! Here's how:
