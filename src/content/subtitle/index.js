@@ -13,6 +13,7 @@ window.IMT = window.IMT || {};
   let subtitleToggleBtn = null;
   let ytControlBtnCheckTimer = null;
   let ytEnsureCaptionTimer = null;
+  let ytCaptionToggleGuardUntil = 0;
 
   // 缓存设置
   let cachedService = 'google';
@@ -115,6 +116,7 @@ window.IMT = window.IMT || {};
 
       const isOn = isYouTubeNativeCaptionOn();
       if (isOn === true) return true;
+      enterYouTubeCaptionStabilizingWindow();
       ccBtn.click();
       return true;
     };
@@ -141,6 +143,37 @@ window.IMT = window.IMT || {};
     ytEnsureCaptionTimer = null;
   }
 
+  function enterYouTubeCaptionStabilizingWindow(durationMs = 900) {
+    ytCaptionToggleGuardUntil = Math.max(ytCaptionToggleGuardUntil, Date.now() + durationMs);
+    ytPendingText = '';
+    ytLastRequestedText = '';
+    ytLastRequestAt = 0;
+    ytLastImmediateProcessAt = 0;
+    ytLiveInFlight = 0;
+    ytStaticInFlight = 0;
+    ytIncrementalHits = 0;
+    ytMode = 'static';
+    ytPrevCaptionText = '';
+    ytPrevCaptionAt = 0;
+    if (ytRetryTimer) {
+      clearTimeout(ytRetryTimer);
+      ytRetryTimer = null;
+    }
+  }
+
+  function bindYouTubeCaptionButtonGuard(ccBtn) {
+    if (!ccBtn || ccBtn.dataset.imtGuardBound === '1') return;
+    ccBtn.dataset.imtGuardBound = '1';
+    ccBtn.addEventListener('click', function () {
+      if (!subtitleEnabled) return;
+      enterYouTubeCaptionStabilizingWindow();
+      setTimeout(function () {
+        if (!subtitleEnabled) return;
+        ensureYouTubeNativeCaptionEnabled();
+      }, 80);
+    }, true);
+  }
+
   function toggleYouTubeNativeCaptionVisibility(showNative) {
     document.documentElement.classList.toggle('imt-yt-caption-replace', !showNative);
   }
@@ -163,6 +196,7 @@ window.IMT = window.IMT || {};
     }
 
     const ccBtn = controls.querySelector('.ytp-subtitles-button');
+    bindYouTubeCaptionButtonGuard(ccBtn);
     if (!btn.isConnected) {
       if (ccBtn) {
         ccBtn.insertAdjacentElement('afterend', btn);
@@ -486,6 +520,7 @@ window.IMT = window.IMT || {};
     ytTrackPrimaryTrack = null;
     ytTrackSentenceGroups = [];
     ytTrackCueToSentence = [];
+    ytCaptionToggleGuardUntil = 0;
   }
 
   function cleanupYouTube() {
@@ -1818,6 +1853,13 @@ window.IMT = window.IMT || {};
       ytMode = 'static';
       return;
     }
+
+    if (isYouTubeNativeCaptionOn() === false) {
+      enterYouTubeCaptionStabilizingWindow();
+      ensureYouTubeNativeCaptionEnabled();
+      return;
+    }
+    if (Date.now() < ytCaptionToggleGuardUntil) return;
 
     if (!currentText) {
       // 延迟隐藏，避免字幕切换间隙闪烁
