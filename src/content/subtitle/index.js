@@ -1462,7 +1462,23 @@ window.IMT = window.IMT || {};
     try {
       const response = await fetch(url, { credentials: 'include' });
       if (!response.ok) return;
-      const data = await response.json();
+      const raw = await response.text();
+      const payload = String(raw || '').trim();
+      if (!payload) return;
+
+      // YouTube timedtext 偶发返回空/截断内容，直接忽略本次拉取即可，下轮会自动重试。
+      const normalizedPayload = payload.replace(/^\)\]\}'\s*/, '');
+      let data = null;
+      try {
+        data = JSON.parse(normalizedPayload);
+      } catch (parseError) {
+        const parseMsg = String(parseError && parseError.message || '');
+        if (parseError instanceof SyntaxError && /Unexpected end of JSON input/i.test(parseMsg)) {
+          return;
+        }
+        throw parseError;
+      }
+
       if (data && Array.isArray(data.events)) {
         handleYouTubeTrackEvents(url, data.events, {
           kind,
@@ -1470,6 +1486,10 @@ window.IMT = window.IMT || {};
         });
       }
     } catch (error) {
+      const msg = String(error && error.message || '');
+      if (error instanceof SyntaxError && /Unexpected end of JSON input/i.test(msg)) {
+        return;
+      }
       console.warn('[IMT] Fetch YouTube track failed:', error);
     }
   }
