@@ -13,6 +13,12 @@ window.IMT = window.IMT || {};
   let subtitleToggleBtn = null;
   let ytControlBtnCheckTimer = null;
   let ytEnsureCaptionTimer = null;
+  let ytCaptionPrimeTimer = null;
+  let ytCaptionPrimePollTimer = null;
+  let ytCaptionPrimeFinalizeTimer = null;
+  let ytCaptionPrimeAttempted = false;
+  let ytCaptionPrimeRetryCount = 0;
+  let ytCaptionPrimingActive = false;
   let ytCaptionToggleGuardUntil = 0;
 
   // 缓存设置
@@ -106,22 +112,27 @@ window.IMT = window.IMT || {};
     return ccBtn.classList.contains('ytp-button-active');
   }
 
-  function ensureYouTubeNativeCaptionEnabled() {
+  function ensureYouTubeNativeCaptionDisabled() {
     if (!isYouTube || !subtitleEnabled) return;
+    if (ytCaptionPrimingActive) return;
 
-    const tryEnable = function () {
+    const tryDisable = function () {
       if (!subtitleEnabled) return true;
+      if (ytCaptionPrimingActive) return false;
       const ccBtn = document.querySelector('.ytp-subtitles-button');
       if (!ccBtn || typeof ccBtn.click !== 'function') return false;
 
       const isOn = isYouTubeNativeCaptionOn();
-      if (isOn === true) return true;
+      if (isOn === false) return true;
       enterYouTubeCaptionStabilizingWindow();
       ccBtn.click();
-      return true;
+      return isYouTubeNativeCaptionOn() === false;
     };
 
-    if (tryEnable()) return;
+    if (tryDisable()) {
+      stopEnsureYouTubeNativeCaptionDisabled();
+      return;
+    }
     if (ytEnsureCaptionTimer) return;
 
     ytEnsureCaptionTimer = setInterval(function () {
@@ -130,17 +141,105 @@ window.IMT = window.IMT || {};
         ytEnsureCaptionTimer = null;
         return;
       }
-      if (tryEnable()) {
+      if (tryDisable()) {
         clearInterval(ytEnsureCaptionTimer);
         ytEnsureCaptionTimer = null;
       }
     }, 600);
   }
 
-  function stopEnsureYouTubeNativeCaptionEnabled() {
+  function stopEnsureYouTubeNativeCaptionDisabled() {
     if (!ytEnsureCaptionTimer) return;
     clearInterval(ytEnsureCaptionTimer);
     ytEnsureCaptionTimer = null;
+  }
+
+  function stopYouTubeCaptionPrimeTimers() {
+    if (ytCaptionPrimeTimer) {
+      clearTimeout(ytCaptionPrimeTimer);
+      ytCaptionPrimeTimer = null;
+    }
+    if (ytCaptionPrimePollTimer) {
+      clearInterval(ytCaptionPrimePollTimer);
+      ytCaptionPrimePollTimer = null;
+    }
+    if (ytCaptionPrimeFinalizeTimer) {
+      clearTimeout(ytCaptionPrimeFinalizeTimer);
+      ytCaptionPrimeFinalizeTimer = null;
+    }
+  }
+
+  function finalizeYouTubeCaptionPrime() {
+    const hasTrackReady = ytTrackCues.length >= YT_TRACK_MIN_CUES;
+    stopYouTubeCaptionPrimeTimers();
+    ytCaptionPrimingActive = false;
+    if (!hasTrackReady) {
+      ytCaptionPrimeAttempted = ytCaptionPrimeRetryCount >= YT_TRACK_PRIME_MAX_RETRIES;
+    } else {
+      ytCaptionPrimeAttempted = true;
+    }
+    if (!subtitleEnabled) return;
+    requestYouTubeCaptionTracks();
+    setTimeout(function () {
+      if (!subtitleEnabled) return;
+      requestYouTubeCaptionTracks();
+      ensureYouTubeNativeCaptionDisabled();
+    }, 120);
+  }
+
+  function startYouTubeCaptionPrimeMonitor() {
+    if (!subtitleEnabled) return;
+    stopYouTubeCaptionPrimeTimers();
+
+    const tryFinalize = function (force) {
+      if (!subtitleEnabled) return true;
+      if (!force && ytTrackCues.length < YT_TRACK_MIN_CUES) {
+        return false;
+      }
+      finalizeYouTubeCaptionPrime();
+      return true;
+    };
+
+    ytCaptionPrimePollTimer = setInterval(function () {
+      if (!subtitleEnabled) {
+        stopYouTubeCaptionPrimeTimers();
+        ytCaptionPrimingActive = false;
+        return;
+      }
+      requestYouTubeCaptionTracks();
+      tryFinalize(false);
+    }, YT_TRACK_PRIME_POLL_MS);
+
+    ytCaptionPrimeFinalizeTimer = setTimeout(function () {
+      tryFinalize(true);
+    }, YT_TRACK_PRIME_MAX_ON_MS);
+  }
+
+  function primeYouTubeCaptionTrackOnce() {
+    if (ytCaptionPrimeRetryCount >= YT_TRACK_PRIME_MAX_RETRIES) return;
+    if (!isYouTube || !subtitleEnabled || ytCaptionPrimeAttempted) return;
+    const ccBtn = document.querySelector('.ytp-subtitles-button');
+    if (!ccBtn || typeof ccBtn.click !== 'function') return;
+
+    const state = isYouTubeNativeCaptionOn();
+    if (state !== true && state !== false) return;
+
+    ytCaptionPrimeAttempted = true;
+    ytCaptionPrimeRetryCount++;
+    ytCaptionPrimingActive = true;
+
+    if (state === false) {
+      enterYouTubeCaptionStabilizingWindow(1400);
+      ccBtn.click();
+    }
+
+    requestYouTubeCaptionTracks();
+    setTimeout(function () {
+      if (!subtitleEnabled) return;
+      requestYouTubeCaptionTracks();
+    }, 120);
+
+    startYouTubeCaptionPrimeMonitor();
   }
 
   function enterYouTubeCaptionStabilizingWindow(durationMs = 900) {
@@ -167,10 +266,6 @@ window.IMT = window.IMT || {};
     ccBtn.addEventListener('click', function () {
       if (!subtitleEnabled) return;
       enterYouTubeCaptionStabilizingWindow();
-      setTimeout(function () {
-        if (!subtitleEnabled) return;
-        ensureYouTubeNativeCaptionEnabled();
-      }, 80);
     }, true);
   }
 
@@ -226,9 +321,9 @@ window.IMT = window.IMT || {};
       ? '视频字幕翻译已开启，点击关闭'
       : '视频字幕翻译已关闭，点击开启';
     if (subtitleEnabled) {
-      ensureYouTubeNativeCaptionEnabled();
+      ensureYouTubeNativeCaptionDisabled();
     } else {
-      stopEnsureYouTubeNativeCaptionEnabled();
+      stopEnsureYouTubeNativeCaptionDisabled();
     }
   }
 
@@ -469,6 +564,10 @@ window.IMT = window.IMT || {};
   const YT_TRACK_PREFETCH_CONCURRENCY = 8;
   const YT_TRACK_PREFETCH_BATCH_SIZE = 4;
   const YT_TRACK_PREFETCH_TIMER_MS = 35;
+  const YT_TRACK_PRIME_DELAY_MS = 900;
+  const YT_TRACK_PRIME_POLL_MS = 220;
+  const YT_TRACK_PRIME_MAX_ON_MS = 2600;
+  const YT_TRACK_PRIME_MAX_RETRIES = 2;
 
   function resetYouTubeLiveAnchor() {
     ytLiveAnchorLeft = null;
@@ -494,6 +593,10 @@ window.IMT = window.IMT || {};
   }
 
   function resetYouTubeTrackState() {
+    stopYouTubeCaptionPrimeTimers();
+    ytCaptionPrimeAttempted = false;
+    ytCaptionPrimeRetryCount = 0;
+    ytCaptionPrimingActive = false;
     if (ytTrackTimer) {
       clearInterval(ytTrackTimer);
       ytTrackTimer = null;
@@ -526,7 +629,7 @@ window.IMT = window.IMT || {};
   function cleanupYouTube() {
     if (ytStartCheck) { clearInterval(ytStartCheck); ytStartCheck = null; }
     if (ytControlBtnCheckTimer) { clearInterval(ytControlBtnCheckTimer); ytControlBtnCheckTimer = null; }
-    stopEnsureYouTubeNativeCaptionEnabled();
+    stopEnsureYouTubeNativeCaptionDisabled();
     if (ytObserver) { ytObserver.disconnect(); ytObserver = null; }
     if (ytPositionRAF) { cancelAnimationFrame(ytPositionRAF); ytPositionRAF = null; }
     if (ytCheckInterval) { clearInterval(ytCheckInterval); ytCheckInterval = null; }
@@ -1620,12 +1723,25 @@ window.IMT = window.IMT || {};
     ensureYouTubeHookInjected();
     ensureYouTubeMessageListener();
     setTimeout(requestYouTubeCaptionTracks, 120);
+    ytCaptionPrimeTimer = setTimeout(function () {
+      ytCaptionPrimeTimer = null;
+      primeYouTubeCaptionTrackOnce();
+    }, YT_TRACK_PRIME_DELAY_MS);
 
     // 健康检查：每 3 秒验证 observer 仍连接到活跃的 DOM
     ytCheckInterval = setInterval(() => {
       if (!ytObservedContainer || !ytObservedContainer.isConnected) {
         console.log('[IMT] Caption container disconnected, restarting...');
         startYouTubeObserver();
+        return;
+      }
+
+      if (
+        subtitleEnabled &&
+        ytTrackCues.length < YT_TRACK_MIN_CUES &&
+        !ytCaptionPrimeAttempted
+      ) {
+        primeYouTubeCaptionTrackOnce();
       }
     }, 3000);
 
@@ -1637,6 +1753,47 @@ window.IMT = window.IMT || {};
    * 这样不管字幕怎么移动（进度条弹出、全屏切换等），译文都紧贴其下方
    */
   function startPositionTracking() {
+    function applyPlayerCenteredFallbackPosition() {
+      if (!ytTranslatedEl) return;
+      const playerEl = document.querySelector('#movie_player') || document.querySelector('.html5-video-player');
+      const playerRect = playerEl ? playerEl.getBoundingClientRect() : null;
+      if (!playerRect || playerRect.width <= 0 || playerRect.height <= 0) return;
+
+      const nextLeft = Math.round(playerRect.left + playerRect.width / 2);
+      const fallbackBottom = ytStaticAnchorBottom != null
+        ? Math.round(ytStaticAnchorBottom)
+        : Math.max(56, Math.round(window.innerHeight * 0.14));
+      const fallbackMaxWidth = Math.max(
+        260,
+        Math.min(
+          Math.round(window.innerWidth * 0.9),
+          Math.max(260, Math.round(playerRect.width - 16))
+        )
+      ) + 'px';
+
+      if (ytAppliedMode !== 'static') {
+        ytTranslatedEl.style.transform = 'translateX(-50%)';
+        ytTranslatedEl.style.textAlign = 'center';
+        ytAppliedMode = 'static';
+      }
+      if (ytAppliedTop !== null) {
+        ytTranslatedEl.style.top = 'auto';
+        ytAppliedTop = null;
+      }
+      if (ytAppliedBottom !== fallbackBottom) {
+        ytTranslatedEl.style.bottom = fallbackBottom + 'px';
+        ytAppliedBottom = fallbackBottom;
+      }
+      if (ytAppliedLeft !== nextLeft) {
+        ytTranslatedEl.style.left = nextLeft + 'px';
+        ytAppliedLeft = nextLeft;
+      }
+      if (ytAppliedMaxWidth !== fallbackMaxWidth) {
+        ytTranslatedEl.style.maxWidth = fallbackMaxWidth;
+        ytAppliedMaxWidth = fallbackMaxWidth;
+      }
+    }
+
     function track(ts) {
       if (!ytTranslatedEl) return;
       if (ytLastTrackAt && ts - ytLastTrackAt < YT_POSITION_TRACK_INTERVAL_MS) {
@@ -1655,6 +1812,11 @@ window.IMT = window.IMT || {};
       }
       if (!captionEl) {
         captionEl = document.querySelector('.ytp-caption-window-bottom');
+      }
+      if (!captionEl) {
+        applyPlayerCenteredFallbackPosition();
+        ytPositionRAF = requestAnimationFrame(track);
+        return;
       }
 
       // 始终追踪位置（不管是否可见），这样显示时位置已经就位
@@ -1783,6 +1945,8 @@ window.IMT = window.IMT || {};
               ytAppliedMaxWidth = nextMaxWidth;
             }
           }
+        } else {
+          applyPlayerCenteredFallbackPosition();
         }
       }
 
@@ -1854,11 +2018,6 @@ window.IMT = window.IMT || {};
       return;
     }
 
-    if (isYouTubeNativeCaptionOn() === false) {
-      enterYouTubeCaptionStabilizingWindow();
-      ensureYouTubeNativeCaptionEnabled();
-      return;
-    }
     if (Date.now() < ytCaptionToggleGuardUntil) return;
 
     if (!currentText) {
