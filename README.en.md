@@ -47,10 +47,11 @@
 ### 🎬 Real-Time Subtitle Companion
 
 - **YouTube ready** — click player-side `译` button to start subtitle translation
-- **Auto CC assist** — subtitle translation can auto-enable YouTube CC when needed
+- **CC-off by default** — keeps native YouTube CC off; briefly primes caption tracks only when needed, then turns CC back off
 - **Latency-first subtitle path** — native translated track first, then cached engine fallback
 - **Overlap-cue alignment** — picks latest active cue to reduce half-beat lag in rollup streams
 - **Smooth subtitle syncing** — tracks subtitle position in real time
+- **Player-center fallback** — keeps overlay centered to the player when native caption nodes are temporarily unavailable
 - **Resilient fallback behavior** — pauses on repeated failures and shows clear feedback
 
 </td>
@@ -179,6 +180,8 @@ git clone https://github.com/cloveric/awe-subtranslate-chrome.git
 | **1** | Open a YouTube video |
 | **2** | Click the player-side `译` button (next to CC) |
 | **3** | Extension renders bilingual subtitle overlay and keeps it synced with player subtitles |
+
+> You usually do not need to click CC manually. The extension keeps native YouTube CC off by default; if track priming is required, it toggles briefly and then returns CC to off.
 
 ### Switch engine anytime
 
